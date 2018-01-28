@@ -125,7 +125,7 @@ fixtures =  [
 	{"dt":"Custom Field", "filters": [["name", "in",
 												["Patient-idr_patient_address_display", 
 												"Patient-idr_place_of_birth"]]]},
-	{"dt":"Print Format", "filters": [["name", "in", ["Consent Letter"]]]}
+	{"dt":"Print Format", "filters": [["name", "in", ["Consent Letter", "Medical Certificate"]]]}
 ]
 
 
