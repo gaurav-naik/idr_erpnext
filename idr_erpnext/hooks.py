@@ -120,3 +120,13 @@ app_license = "GPL v3"
 # 	"frappe.desk.doctype.event.event.get_events": "idr_erpnext.event.get_events"
 # }
 
+fixtures =  [
+	{"dt":"Custom Script", "filters": [["name", "in", ["Patient-Client"]]]},
+	{"dt":"Custom Field", "filters": [["name", "in",
+												["Patient-idr_patient_address_display", 
+												"Patient-idr_place_of_birth"]]]},
+	{"dt":"Print Format", "filters": [["name", "in", ["Consent Letter"]]]}
+]
+
+
+
