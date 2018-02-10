@@ -79,13 +79,11 @@ app_license = "GPL v3"
 # ---------------
 # Hook on document methods and events
 
-# doc_events = {
-# 	"*": {
-# 		"on_update": "method",
-# 		"on_cancel": "method",
-# 		"on_trash": "method"
-#	}
-# }
+doc_events = {
+	"Patient": {
+		"after_insert": "idr_erpnext.api.create_customer_against_patient"
+	}
+}
 
 # Scheduled Tasks
 # ---------------
@@ -119,4 +117,14 @@ app_license = "GPL v3"
 # override_whitelisted_methods = {
 # 	"frappe.desk.doctype.event.event.get_events": "idr_erpnext.event.get_events"
 # }
+
+fixtures =  [
+	{"dt":"Custom Field", "filters": [["name", "in",
+												["Patient-idr_patient_address",
+												"Patient-idr_patient_address_display", 
+												"Patient-idr_place_of_birth"]]]},
+	{"dt":"Print Format", "filters": [["name", "in", ["Consent Letter", "Medical Certificate"]]]}
+]
+
+
 
