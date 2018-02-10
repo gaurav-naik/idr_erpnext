@@ -8,21 +8,25 @@ def get_patient_address_display(address_name):
 
 
 def create_customer_against_patient(self, method):
-	customer_group = frappe.get_value("Selling Settings", None, "customer_group")
-	territory = frappe.get_value("Selling Settings", None, "territory")
-	if not (customer_group and territory):
-		customer_group = "Commercial"
-		territory = "Rest Of The World"
-		frappe.msgprint(_("Please set default customer group and territory in Selling Settings"), alert=True)
-	
-	customer = frappe.get_doc({"doctype": "Customer",
-	"customer_name": self.patient_name,
-	"customer_group": customer_group,
-	"territory" : territory,
-	"customer_type": "Individual"
-	}).insert(ignore_permissions=True)
+	settings = frappe.get_doc("Healthcare Settings")
 
-	frappe.db.set_value("Patient", self.name, "customer", customer.name)
+	if not settings.manage_customer:
+		
+		customer_group = frappe.get_value("Selling Settings", None, "customer_group")
+		territory = frappe.get_value("Selling Settings", None, "territory")
+		if not (customer_group and territory):
+			customer_group = "Commercial"
+			territory = "Rest Of The World"
+			frappe.msgprint(_("Please set default customer group and territory in Selling Settings"), alert=True)
+		
+		customer = frappe.get_doc({"doctype": "Customer",
+		"customer_name": self.patient_name,
+		"customer_group": customer_group,
+		"territory" : territory,
+		"customer_type": "Individual"
+		}).insert(ignore_permissions=True)
 
-	frappe.msgprint(_("Customer {0} creare.").format(customer.name), alert=True)
-	
+		frappe.db.set_value("Patient", self.name, "customer", customer.name)
+
+		frappe.msgprint(_("Customer {0} created.").format(customer.name), alert=True)
+		
