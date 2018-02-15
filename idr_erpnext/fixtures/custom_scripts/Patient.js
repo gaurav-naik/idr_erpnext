@@ -42,9 +42,6 @@ function set_patient_address(frm) {
 function add_make_sales_invoice_button(frm) {
 	if (!frm.doc.__islocal) {
 		frm.add_custom_button(__('Sales Invoice'), function() {
-
-			console.log("Clicked")
-
 			frappe.call({
 				method: "idr_erpnext.api.create_invoice_for_patient",
 				args: {
