@@ -80,11 +80,9 @@ app_license = "GPL v3"
 # Hook on document methods and events
 
 # doc_events = {
-# 	"*": {
-# 		"on_update": "method",
-# 		"on_cancel": "method",
-# 		"on_trash": "method"
-#	}
+# 	"Patient": {
+# 		"after_insert": "idr_erpnext.api.patient_after_insert"
+# 	}
 # }
 
 # Scheduled Tasks

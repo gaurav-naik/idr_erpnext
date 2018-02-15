@@ -18,6 +18,9 @@ frappe.ui.form.on("Patient", {
 		if (frm.doc.customer == undefined) {
 			frm.set_value("idr_patient_address", undefined)
 		}
+	},
+	"refresh": function(frm) {
+		add_make_sales_invoice_button(frm);
 	}
 })
 
@@ -33,5 +36,27 @@ function set_patient_address(frm) {
 		})
 	} else {
 		frm.set_value("idr_patient_address_display", undefined)
+	}
+}
+
+function add_make_sales_invoice_button(frm) {
+	if (!frm.doc.__islocal) {
+		frm.add_custom_button(__('Sales Invoice'), function() {
+			frappe.call({
+				method: "idr_erpnext.api.create_invoice_for_patient",
+				args: {
+					patient_name: frm.doc.patient_name
+				}
+			}).done((r) => {
+				if (!r.exc) {
+					frappe.model.sync(r.message);
+					frappe.set_route("Form", r.message.doctype, r.message.name);
+				} else {
+					frappe.show_alert(_("Unable to create Sales Invoice. <br>") + r.exc);
+				}
+			}).fail((f) => {
+				frappe.show_alert(_("A problem occurred while creating a Sales Invoice. <br>") + f);
+			})
+		},__("Create"));
 	}
 }
