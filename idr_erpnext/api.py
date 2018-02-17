@@ -14,5 +14,6 @@ def create_invoice_for_patient(patient_name):
 	si.customer = patient_name
 	si.customer_address = get_default_address("Customer", patient_name)
 	si.contact_person = get_default_contact("Customer", patient_name)
+	si.due_date = frappe.utils.nowdate()
 
 	return si
