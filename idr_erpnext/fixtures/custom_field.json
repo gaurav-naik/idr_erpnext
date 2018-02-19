@@ -134,7 +134,7 @@
   "in_list_view": 0, 
   "in_standard_filter": 0, 
   "insert_after": "appointment_type", 
-  "label": "Appointment For", 
+  "label": "Procedure", 
   "modified": "2018-02-19 06:10:27.072342", 
   "name": "Patient Appointment-idr_appointment_type", 
   "no_copy": 0, 
