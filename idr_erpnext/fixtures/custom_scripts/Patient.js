@@ -58,7 +58,7 @@ function make_sales_invoice(frm) {
 	frappe.call({
 		method: "idr_erpnext.api.create_invoice_for_patient",
 		args: {
-			patient_name: frm.doc.patient_name
+			patient_customer: frm.doc.customer
 		},
 		freeze: true,
 		freeze_message: __("Creating Sales Invoice...")
