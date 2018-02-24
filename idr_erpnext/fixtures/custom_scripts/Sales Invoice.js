@@ -10,7 +10,7 @@ frappe.ui.form.on("Sales Invoice", {
 			frappe.db.get_value("Patient Appointment", cur_frm.doc.appointment, "idr_appointment_type", function(r) {
 				let first_item = locals["Sales Invoice Item"][cur_frm.doc.items[0].name]
 				first_item.item_code = r.idr_appointment_type
-				first_item.item_name = "";
+				first_item.item_name = r.idr_appointment_type;
 				first_item.description = r.idr_appointment_type
 				refresh_field("items");
 			})
