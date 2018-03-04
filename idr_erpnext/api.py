@@ -17,3 +17,9 @@ def create_invoice_for_patient(patient_customer):
 	si.due_date = frappe.utils.nowdate()
 
 	return si
+
+@frappe.whitelist()
+def generate_codice_fiscale(last_name, first_name, date_of_birth, gender, municipality):
+	from codicefiscale import build
+
+	return build(last_name, first_name, date_of_birth, gender, municipality)
