@@ -23,3 +23,16 @@ def generate_codice_fiscale(last_name, first_name, date_of_birth, gender, munici
 	from codicefiscale import build
 
 	return build(last_name, first_name, date_of_birth, gender, municipality)
+
+@frappe.whitelist()
+def get_procedure_data_from_appointment(patient_appointment):
+
+	idr_appointment_type = frappe.db.get_value("Patient Appointment", patient_appointment, "idr_appointment_type")
+	rate = frappe.db.get_value("Item Price", {"item_code":idr_appointment_type}, "price_list_rate")
+
+	out = {
+		"idr_appointment_type": idr_appointment_type,
+		"rate": rate or 0
+	}
+	
+	return out

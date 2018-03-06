@@ -7,13 +7,23 @@ frappe.ui.form.on("Sales Invoice", {
 			refresh_field("items");
  			frappe.ui.scroll("[data-fieldname='currency']", true);
 		} else if (last_route && last_route[0] == "Form" && last_route[1] == "Patient Appointment") {
-			frappe.db.get_value("Patient Appointment", cur_frm.doc.appointment, "idr_appointment_type", function(r) {
-				let first_item = locals["Sales Invoice Item"][cur_frm.doc.items[0].name]
-				first_item.item_code = r.idr_appointment_type
-				first_item.item_name = r.idr_appointment_type;
-				first_item.description = r.idr_appointment_type
+
+			frappe.call({
+				method: "idr_erpnext.api.get_procedure_data_from_appointment",
+				args: {
+					patient_appointment: cur_frm.doc.appointment
+				}
+			}).done(function(r) {
+				var first_item = locals["Sales Invoice Item"][cur_frm.doc.items[0].name];
+				first_item.item_code = r.message.idr_appointment_type;
+				first_item.item_name = r.message.idr_appointment_type;
+				first_item.description = r.message.idr_appointment_type;
+				first_item.rate = r.message.rate;
+				first_item.qty = 1;
+				first_item.amount = first_item.rate * first_item.qty;
+
 				refresh_field("items");
-			})
+			});
 		}
 	}
-})
+});
