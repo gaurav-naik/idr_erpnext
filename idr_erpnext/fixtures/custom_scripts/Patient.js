@@ -24,11 +24,12 @@ frappe.ui.form.on("Patient", {
 	}
 })
 
-frappe.ui.keys.on('ctrl+i', function(e) {
-	if ((cur_frm.doc.doctype == "Patient") && (!cur_frm.doc.__islocal)) {
-		make_sales_invoice(cur_frm);
-	}
-});
+// Discontinued after using Patient Appointment flow
+// frappe.ui.keys.on('ctrl+i', function(e) {
+// 	if ((cur_frm.doc.doctype == "Patient") && (!cur_frm.doc.__islocal)) {
+// 		make_sales_invoice(cur_frm);
+// 	}
+// });
 
 function set_patient_address(frm) {
 	if (frm.doc.idr_patient_address) {
@@ -53,23 +54,23 @@ function add_custom_buttons(frm) {
 	}
 }
 
-
-function make_sales_invoice(frm) {
-	frappe.call({
-		method: "idr_erpnext.api.create_invoice_for_patient",
-		args: {
-			patient_customer: frm.doc.customer
-		},
-		freeze: true,
-		freeze_message: __("Creating Sales Invoice...")
-	}).done((r) => {
-		if (!r.exc) {
-			frappe.model.sync(r.message);
-			frappe.set_route("Form", r.message.doctype, r.message.name);
-		} else {
-			frappe.show_alert(__("Unable to create Sales Invoice. <br>") + r.exc);
-		}
-	}).fail((f) => {
-		frappe.show_alert(__("A problem occurred while creating a Sales Invoice. <br>") + f);
-	})
-}
+// Discontinued after using Patient Appointment flow
+// function make_sales_invoice(frm) {
+// 	frappe.call({
+// 		method: "idr_erpnext.api.create_invoice_for_patient",
+// 		args: {
+// 			patient_customer: frm.doc.customer
+// 		},
+// 		freeze: true,
+// 		freeze_message: __("Creating Sales Invoice...")
+// 	}).done((r) => {
+// 		if (!r.exc) {
+// 			frappe.model.sync(r.message);
+// 			frappe.set_route("Form", r.message.doctype, r.message.name);
+// 		} else {
+// 			frappe.show_alert(__("Unable to create Sales Invoice. <br>") + r.exc);
+// 		}
+// 	}).fail((f) => {
+// 		frappe.show_alert(__("A problem occurred while creating a Sales Invoice. <br>") + f);
+// 	})
+// }

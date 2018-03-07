@@ -7,16 +7,17 @@ from frappe import _
 def get_patient_address_display(address_name):
 	return get_address_display(frappe.get_doc("Address", address_name).as_dict())
 
-@frappe.whitelist()
-def create_invoice_for_patient(patient_customer):
-	si = frappe.new_doc("Sales Invoice")
-	si.company = frappe.defaults.get_defaults()["company"]
-	si.customer = patient_customer
-	si.customer_address = get_default_address("Customer", patient_customer)
-	si.contact_person = get_default_contact("Customer", patient_customer)
-	si.due_date = frappe.utils.nowdate()
+# Discontinued after using Patient Appointment flow
+# @frappe.whitelist()
+# def create_invoice_for_patient(patient_customer):
+# 	si = frappe.new_doc("Sales Invoice")
+# 	si.company = frappe.defaults.get_defaults()["company"]
+# 	si.customer = patient_customer
+# 	si.customer_address = get_default_address("Customer", patient_customer)
+# 	si.contact_person = get_default_contact("Customer", patient_customer)
+# 	si.due_date = frappe.utils.nowdate()
 
-	return si
+# 	return si
 
 @frappe.whitelist()
 def generate_codice_fiscale(last_name, first_name, date_of_birth, gender, municipality):
