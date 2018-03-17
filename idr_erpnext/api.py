@@ -20,10 +20,13 @@ def get_patient_address_display(address_name):
 # 	return si
 
 @frappe.whitelist()
-def generate_codice_fiscale(last_name, first_name, date_of_birth, gender, municipality):
-	from codicefiscale import build
+def generate_codice_fiscale(first_name, last_name, date_of_birth, gender, place_of_birth):
+	for x in xrange(1,10):
+		print (first_name, last_name, date_of_birth, gender, place_of_birth)
 
-	return build(last_name, first_name, date_of_birth, gender, municipality)
+	# from codicefiscale import build
+
+	# return build(last_name, first_name, date_of_birth, "M" if gender == "Male" else "F", municipality)
 
 @frappe.whitelist()
 def get_procedure_data_from_appointment(patient_appointment):
@@ -37,44 +40,75 @@ def get_procedure_data_from_appointment(patient_appointment):
 	
 	return out
 
-@frappe.whitelist()
-def physician_after_insert(self, method):
+
+def physician_after_insert(doc, method):
 	#Create Supplier for invoicing
 	supplier = frappe.new_doc("Supplier")
-	supplier.supplier_name = " ".join([self.first_name, self.middle_name, self.last_name])
-	supplier.supplier_type = "Member" if self.is_member else "Non Member"
+	supplier.supplier_name = " ".join(filter(None, [doc.first_name, doc.middle_name, doc.last_name]))
+	supplier.supplier_type = "Non Member"
 	supplier.save()
 
-	self.db_set("idr_supplier", supplier.name)
-
+	doc.db_set("idr_supplier", supplier.name)
+	frappe.db.commit()
 	#TODO: create tax rules
 	
-@frappe.whitelist()
-def patient_after_insert(self, method):
-	#Create contact and address and link to customer
-	address = frappe.new_doc("Address")
-	address.title = self.patient_name
-	address.address_line1 = self.idr_address_line1
-	address.address_line2 = self.idr_address_line2
-	address.city = self.idr_city
-	addres.pincode = self.idr_pincode
+
+def patient_on_update(doc, method):
+	if not doc.customer:
+		return
+
+	existing_address = frappe.get_all("Dynamic Link", 
+		filters={"link_doctype":"Customer", "link_name":doc.customer, "parenttype":"Address"}, fields=["parent"])
+	existing_contact = frappe.get_all("Dynamic Link", 
+		filters={"link_doctype":"Customer", "link_name":doc.customer, "parenttype":"Contact"}, fields=["parent"]) 
+
+	#Create Address and link to customer.
+	address = None	
+	if len(existing_address) > 0:
+		address = frappe.get_doc("Address", existing_address.parent)
+	else:
+		address = frappe.new_doc("Address")
+
+	address.title = doc.patient_name
+	address.type = "Billing"
+	address.address_line1 = doc.idr_address_line1
+	address.address_line2 = doc.idr_address_line2
+	address.city = doc.idr_address_city
+	address.pincode = doc.idr_address_pincode
 	address.country = frappe.defaults.get_defaults().get("country")
+	address.is_primary_address = 1
 	address.append('links', {
 		"link_doctype": "Customer",
-		"link_name": self.customer
+		"link_name": doc.customer
 	})
-	address.save()
+	try:
+		address.save()
+	except Exception as e:
+		raise
 
-	contact = frappe.new_doc("Contact")
-	contact.first_name = self.patient_name.split(" ")[0]
-	contact.last_name = self.patient_name.split(" ")[0] or ""
-	address.append('links', {
+	contact = None
+	if len(existing_contact) > 0:
+		contact = frappe.get_doc("Contact", existing_contact.parent) 
+	else:	
+		contact = frappe.new_doc("Contact")
+		
+	contact_name = doc.patient_name.split(" ")
+	contact.first_name = contact_name[0]
+	if len(contact_name) > 1:
+		contact.last_name = contact_name[1]
+	contact.mobile_no = doc.mobile
+	contact.gender = doc.sex
+	contact.phone = doc.phone
+	contact.is_primary_contact = 1
+
+	contact.append('links', {
 		"link_doctype": "Customer",
-		"link_name": self.customer
+		"link_name": doc.customer
 	})
-	contact.save()
 
-	frappe.db.commit()
-
-	#Rename Customer
-	frappe.rename_doc("Customer", self.customer, self.patient_name)
+	try:
+		contact.save()
+	except Exception as e:
+		raise
+	
+	frappe.db.set_value("Customer", doc.customer, "customer_name", doc.patient_name)
