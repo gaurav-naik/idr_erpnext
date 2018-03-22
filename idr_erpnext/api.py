@@ -21,12 +21,9 @@ def get_patient_address_display(address_name):
 
 @frappe.whitelist()
 def generate_codice_fiscale(first_name, last_name, date_of_birth, gender, place_of_birth):
-	for x in xrange(1,10):
-		print (first_name, last_name, date_of_birth, gender, place_of_birth)
-
 	# from codicefiscale import build
-
 	# return build(last_name, first_name, date_of_birth, "M" if gender == "Male" else "F", municipality)
+	pass
 
 @frappe.whitelist()
 def get_procedure_data_from_appointment(patient_appointment):

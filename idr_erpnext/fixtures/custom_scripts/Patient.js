@@ -59,49 +59,29 @@ function add_custom_buttons(frm) {
 		},__("Create"));
 	}
 
-	if (!(__("Generate Codice Fiscale") in frm.custom_buttons)) {
-		frm.add_custom_button(__("Generate Codice Fiscale"), function() {
-			if (!frm.doc.sex) {
-				frappe.msgprint(__("Gender is required for generating Codice Fiscale"));
-			} else if (!frm.doc.idr_place_of_birth) {
-				frappe.msgprint(__("Place of birth is required for generating Codice Fiscale"));
-			} else {
-				frappe.call({
-					method:"idr_erpnext.api.generate_codice_fiscale",
-					args: {
-						"first_name":frm.doc.idr_patient_first_name,
-						"last_name":frm.doc.idr_patient_last_name,
-						"gender": frm.doc.sex,
-						"date_of_birth": frm.doc.dob,
-						"place_of_birth": frm.doc.idr_place_of_birth
-					}
-				}).done(function(r) {
-					if (!r.exc) {
-						frm.set_value("idr_patient_codice_fiscale", r.message);
-					}
-				});
-			}
-		});
-	}
+	//Suspended
+	// if (!(__("Generate Codice Fiscale") in frm.custom_buttons)) {
+	// 	frm.add_custom_button(__("Generate Codice Fiscale"), function() {
+	// 		if (!frm.doc.sex) {
+	// 			frappe.msgprint(__("Gender is required for generating Codice Fiscale"));
+	// 		} else if (!frm.doc.idr_place_of_birth) {
+	// 			frappe.msgprint(__("Place of birth is required for generating Codice Fiscale"));
+	// 		} else {
+	// 			frappe.call({
+	// 				method:"idr_erpnext.api.generate_codice_fiscale",
+	// 				args: {
+	// 					"first_name":frm.doc.idr_patient_first_name,
+	// 					"last_name":frm.doc.idr_patient_last_name,
+	// 					"gender": frm.doc.sex,
+	// 					"date_of_birth": frm.doc.dob,
+	// 					"place_of_birth": frm.doc.idr_place_of_birth
+	// 				}
+	// 			}).done(function(r) {
+	// 				if (!r.exc) {
+	// 					frm.set_value("idr_patient_codice_fiscale", r.message);
+	// 				}
+	// 			});
+	// 		}
+	// 	});
+	// }
 }
-
-// Discontinued after using Patient Appointment flow
-// function make_sales_invoice(frm) {
-// 	frappe.call({
-// 		method: "idr_erpnext.api.create_invoice_for_patient",
-// 		args: {
-// 			patient_customer: frm.doc.customer
-// 		},
-// 		freeze: true,
-// 		freeze_message: __("Creating Sales Invoice...")
-// 	}).done((r) => {
-// 		if (!r.exc) {
-// 			frappe.model.sync(r.message);
-// 			frappe.set_route("Form", r.message.doctype, r.message.name);
-// 		} else {
-// 			frappe.show_alert(__("Unable to create Sales Invoice. <br>") + r.exc);
-// 		}
-// 	}).fail((f) => {
-// 		frappe.show_alert(__("A problem occurred while creating a Sales Invoice. <br>") + f);
-// 	})
-// }
