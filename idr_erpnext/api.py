@@ -54,6 +54,11 @@ def patient_on_update(doc, method):
 	if not doc.customer:
 		return
 
+	frappe.db.set_value("Customer", doc.customer, "customer_name", doc.patient_name)
+
+	if not (doc.idr_address_line1 or doc.idr_address_city):
+		return
+
 	existing_address = frappe.get_all("Dynamic Link", 
 		filters={"link_doctype":"Customer", "link_name":doc.customer, "parenttype":"Address"}, fields=["parent"])
 	existing_contact = frappe.get_all("Dynamic Link", 
@@ -108,4 +113,3 @@ def patient_on_update(doc, method):
 	except Exception as e:
 		raise
 	
-	frappe.db.set_value("Customer", doc.customer, "customer_name", doc.patient_name)
