@@ -32,5 +32,39 @@
   "property": "default_print_format", 
   "property_type": "Data", 
   "value": "IDR Sales Invoice"
+ }, 
+ {
+  "_assign": null, 
+  "_comments": null, 
+  "_liked_by": null, 
+  "_user_tags": null, 
+  "default_value": null, 
+  "doc_type": "Patient Appointment", 
+  "docstatus": 0, 
+  "doctype": "Property Setter", 
+  "doctype_or_field": "DocField", 
+  "field_name": "appointment_date", 
+  "modified": "2018-03-26 08:35:56.914037", 
+  "name": "Patient Appointment-appointment_date-in_list_view", 
+  "property": "in_list_view", 
+  "property_type": "Check", 
+  "value": "1"
+ }, 
+ {
+  "_assign": null, 
+  "_comments": null, 
+  "_liked_by": null, 
+  "_user_tags": null, 
+  "default_value": null, 
+  "doc_type": "Physician", 
+  "docstatus": 0, 
+  "doctype": "Property Setter", 
+  "doctype_or_field": "DocField", 
+  "field_name": "department", 
+  "modified": "2018-03-26 10:24:11.453998", 
+  "name": "Physician-department-in_list_view", 
+  "property": "in_list_view", 
+  "property_type": "Check", 
+  "value": "1"
  }
 ]

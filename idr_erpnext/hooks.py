@@ -143,13 +143,13 @@ fixtures =  [
 	{"dt":"Property Setter", "filters": [["name", "in", [
 		"Patient-sex-default",
 		"Sales Invoice-default_print_format",
+		"Physician-department-in_list_view",
+		"Patient Appointment-appointment_date-in_list_view"
 	]]]},
 	{"dt":"Print Format", "filters": [["name", "in", [
 		"Consent Letter", 
 		"Medical Certificate",
-		"IDR Sales Invoice"
+		"IDR Sales Invoice",
+		"IDR Fattura Paziente"
 	]]]}
 ]
-
-
-
