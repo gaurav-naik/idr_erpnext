@@ -142,8 +142,8 @@ def get_earliest_available_time_slot(physician):
 
 	weekdays = list(set([timeslot.day for timeslot in timeslots]))
 	weekdays_with_dow_values = [{"day": weekday, "value": get_weekday_value(weekday)} for weekday in weekdays]
-	earliest_weekday = min(min(weekdays_with_dow_values, key=lambda x:x.get("value"))) #Smallest value implies earliest day in a week
+	next_weekdays = [get_next_weekday(frappe.utils.getdate(), weekday.get("value")) for weekday in weekdays_with_dow_values]
+	
+	next_earliest_weekday_date = min(next_weekdays)
 
-	next_weekday_date = get_next_weekday(frappe.utils.getdate(), earliest_weekday)
-
-	return next_weekday_date
+	return next_earliest_weekday_date 
