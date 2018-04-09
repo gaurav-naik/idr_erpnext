@@ -113,3 +113,37 @@ def patient_on_update(doc, method):
 	except Exception as e:
 		raise
 	
+def get_earliest_available_time_slot(physician):
+	'''
+		get day from today
+		get smallest day value from timeslots for physician
+		get next day from today where day value is smallest day value
+		return day
+
+	'''
+	def get_next_weekday(d, weekday):
+	    days_ahead = weekday - d.weekday()
+	    if days_ahead <= 0: # Target day already happened this week
+	        days_ahead += 7
+	    return d + frappe.utils.datetime.timedelta(days_ahead)
+
+	def get_weekday_value(weekday):
+		return {
+			"Monday": 0,
+			"Tuesday": 1,
+			"Wednesday": 2,
+			"Thursday": 3,
+			"Friday": 4,
+			"Saturday": 5,
+			"Sunday": 6
+		}[weekday]
+
+	timeslots = frappe.get_all("Physician Schedule Time Slot", filters={"parent": physician}, fields=["day", "from_time", "to_time"])
+
+	weekdays = list(set([timeslot.day for timeslot in timeslots]))
+	weekdays_with_dow_values = [{"day": weekday, "value": get_weekday_value(weekday)} for weekday in weekdays]
+	earliest_weekday = min(min(weekdays_with_dow_values, key=lambda x:x.get("value"))) #Smallest value implies earliest day in a week
+
+	next_weekday_date = get_next_weekday(frappe.utils.getdate(), earliest_weekday)
+
+	return next_weekday_date
