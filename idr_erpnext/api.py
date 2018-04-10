@@ -113,12 +113,12 @@ def patient_on_update(doc, method):
 	except Exception as e:
 		raise
 	
-def get_earliest_available_time_slot(physician):
+@frappe.whitelist()
+def get_earliest_available_date(physician):
 	'''
-		get day from today
-		get smallest day value from timeslots for physician
-		get next day from today where day value is smallest day value
-		return day
+		extract days of week from timeslots for physician
+		get earliest next date from today by comparing 'day.weekday' in slot and today's 'day.weekday'
+		get minimum of all dates
 
 	'''
 	def get_next_weekday(d, weekday):
@@ -142,8 +142,33 @@ def get_earliest_available_time_slot(physician):
 
 	weekdays = list(set([timeslot.day for timeslot in timeslots]))
 	weekdays_with_dow_values = [{"day": weekday, "value": get_weekday_value(weekday)} for weekday in weekdays]
+
 	next_weekdays = [get_next_weekday(frappe.utils.getdate(), weekday.get("value")) for weekday in weekdays_with_dow_values]
 	
 	next_earliest_weekday_date = min(next_weekdays)
 
 	return next_earliest_weekday_date 
+
+@frappe.whitelist()
+def get_earliest_available_physician_and_date():
+	'''
+		get SOCI doctors
+		get earliest timeslots for each doctor
+		return earliest among them.
+	''' 
+	soci_department = frappe.db.get_value("IDR Settings", "IDR Settings", "member_department")
+	soci_physicians = frappe.get_all("Physician", filters={"department":soci_department})
+
+	earliest_physician_availability_list = [
+		{
+			"physician": physician.name, 
+			"earliest_available_date": get_earliest_available_date(physician.name)
+		} for physician in soci_physicians
+	]
+
+	print (earliest_physician_availability_list)
+
+	earliest_physician_availability = min(earliest_physician_availability_list, key=lambda x:x.get("earliest_available_date"))
+
+	return earliest_physician_availability
+
