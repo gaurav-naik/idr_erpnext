@@ -1,4 +1,20 @@
 frappe.ui.form.on("Patient Appointment", {
+	refresh: function(frm) {
+		if (frm.doc.sales_invoice) {
+			frm.add_custom_button(__("Delete Linked Invoice"), function() {
+				frappe.call({
+					method:"idr_erpnext.api.unlink_and_delete_sales_invoice",
+					args: {
+						patient_appointment: frm.doc.name
+					}
+				}).done(function(r) {
+					frm.reload_doc();
+				}).error(function(r) {
+					frappe.show_alert(__("Cannot unlink sales invoice"));
+				});
+			});
+		}
+	},
 	patient: function(frm) {
 		if (!frm.doc.patient) { return 0; }
 		frappe.call({

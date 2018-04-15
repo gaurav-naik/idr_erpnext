@@ -172,3 +172,24 @@ def get_earliest_available_physician_and_date():
 
 	return earliest_physician_availability
 
+@frappe.whitelist()
+def unlink_and_delete_sales_invoice(patient_appointment):
+	sales_invoice = frappe.get_doc("Sales Invoice", {"appointment": patient_appointment})
+
+
+	if sales_invoice.docstatus == 1:
+		frappe.throw(_("Cannot delete a submitted Sales Invoice"))
+
+	fee_validity_name = frappe.db.get_value("Fee Validity", {"ref_invoice": sales_invoice.name})
+
+	try:
+		frappe.db.set_value("Sales Invoice", sales_invoice.name, "appointment", None)
+		frappe.db.set_value("Patient Appointment", patient_appointment, "sales_invoice", None)
+		frappe.db.set_value("Fee Validity", fee_validity_name, "ref_invoice", None)
+	except Exception as e:
+		raise
+
+	#Delete doc
+	frappe.delete_doc("Sales Invoice", sales_invoice.name)
+	frappe.db.commit()
+	
