@@ -29,7 +29,7 @@ frappe.ui.form.on("Patient", {
 		make_full_name(frm);
 	},
 	"idr_patient_phone_no": function(frm) {
-		frm.set_value("phone", idr_patient_phone);
+		frm.set_value("phone", frm.doc.idr_patient_phone);
 	}
 });
 
