@@ -138,7 +138,10 @@ fixtures =  [
 		"Patient-idr_cb_patient_quick_entry",
 		"Patient-idr_sb_patient_quick_entry",
 		"Patient Appointment-idr_appointment_type",
-		"Physician-idr_supplier"
+		"Physician-idr_supplier",
+		"Customer-idr_customer_first_name",
+		"Customer-idr_customer_last_name",
+		"Customer-idr_customer_place_of_birth"
 	]]]},
 	{"dt":"Property Setter", "filters": [["name", "in", [
 		"Patient-sex-default",
