@@ -58,40 +58,9 @@ def patient_on_update(doc, method):
 	frappe.db.set_value("Customer", doc.customer, "idr_customer_first_name", doc.idr_patient_first_name)
 	frappe.db.set_value("Customer", doc.customer, "idr_customer_last_name", doc.idr_patient_last_name)
 
-	# if not (doc.idr_address_line1 or doc.idr_address_city):
-	# 	return
-
-	# existing_address = frappe.get_all("Dynamic Link", 
-	# 	filters={"link_doctype":"Customer", "link_name":doc.customer, "parenttype":"Address"}, fields=["parent"])
 	existing_contact = frappe.get_all("Dynamic Link", 
 		filters={"link_doctype":"Customer", "link_name":doc.customer, "parenttype":"Contact"}, fields=["parent"]) 
 
-
-
-
-	# #Create Address and link to customer.
-	# address = None	
-	# if len(existing_address) > 0:
-	# 	address = frappe.get_doc("Address", existing_address.parent)
-	# else:
-	# 	address = frappe.new_doc("Address")
-
-	# address.title = doc.patient_name
-	# address.type = "Billing"
-	# address.address_line1 = doc.idr_address_line1
-	# address.address_line2 = doc.idr_address_line2
-	# address.city = doc.idr_address_city
-	# address.pincode = doc.idr_address_pincode
-	# address.country = frappe.defaults.get_defaults().get("country")
-	# address.is_primary_address = 1
-	# address.append('links', {
-	# 	"link_doctype": "Customer",
-	# 	"link_name": doc.customer
-	# })
-	# try:
-	# 	address.save()
-	# except Exception as e:
-	# 	raise
 
 	contact = None
 	if len(existing_contact) > 0:
