@@ -16,6 +16,23 @@ frappe.ui.form.on("Patient Appointment", {
 				});
 			});
 		}
+
+		//Check if patient info is filled
+		frappe.call({
+			method: "idr_erpnext.api.check_patient_details",
+			args: {
+				patient: frm.doc.name,
+			}
+		}).done(function(r) {
+			console.log("Check patient details", r);
+			if (r && r.message == 0) {
+				frm.set_df_property("patient", "label", __("Patient") + '   <b style="color:red">[' + __("Customer details missing") + ']</b>');
+			} else {
+				frm.set_df_property("patient", "label", __("Patient"));
+			}
+		}).error(function(err) {
+			frappe.show_alert(__("Could not check patient details"));
+		});
 	},
 	patient: function(frm) {
 		if (!frm.doc.patient) { return 0; }

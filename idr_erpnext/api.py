@@ -167,3 +167,30 @@ def unlink_and_delete_sales_invoice(patient_appointment):
 	frappe.delete_doc("Sales Invoice", sales_invoice.name)
 	frappe.db.commit()
 	
+@frappe.whitelist()
+def check_patient_details(patient):
+	#Check if Customer has First Name, Last Name, Place of Birth, Tax ID, Phone Number (Contact)
+
+	patient_customer = frappe.db.get_value("Patient", patient, "customer")
+
+	if not patient_customer:
+		return "0"
+
+	customer_tax_id = frappe.db.get_value("Customer", patient_customer, "tax_id")
+	
+	#Get existing address. Return 0 if not found.
+	existing_address_name = get_default_address("Customer", patient_customer)
+
+	if not existing_address_name:
+		return "0"
+
+	existing_address = frappe.get_doc("Address",existing_address_name) 
+	
+	#Get existing customer
+	out = existing_address.address_line1 is not None and \
+	existing_address.city is not None and \
+	existing_address.pincode is not None and \
+	customer_tax_id is not None
+
+	return "1" if out == True else "0"
+
