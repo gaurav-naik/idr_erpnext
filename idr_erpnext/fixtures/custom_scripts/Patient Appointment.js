@@ -6,7 +6,9 @@ frappe.ui.form.on("Patient Appointment", {
 					method:"idr_erpnext.api.unlink_and_delete_sales_invoice",
 					args: {
 						patient_appointment: frm.doc.name
-					}
+					},
+					freeze: true,
+					freeze_message: __("Deleting linked invoice...")
 				}).done(function(r) {
 					frm.reload_doc();
 				}).error(function(r) {
