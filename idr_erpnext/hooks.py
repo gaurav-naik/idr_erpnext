@@ -123,20 +123,11 @@ doc_events = {
 
 fixtures =  [
 	{"dt":"Custom Field", "filters": [["name", "in", [
-		"Patient-idr_patient_address",
-		"Patient-idr_patient_address_display", 
-		"Patient-idr_place_of_birth",
-		"Patient-idr_sb_patient_details",
-		"Patient-idr_address_line1",
-		"Patient-idr_address_line2",
-		"Patient-idr_address_city",
-		"Patient-idr_address_pincode",
-		"Patient-idr_patient_codice_fiscale",
+		"Patient-idr_sb_patient_quick_entry",
 		"Patient-idr_patient_first_name",
 		"Patient-idr_patient_last_name",
-		"Patient-idr_patient_phone_no",
 		"Patient-idr_cb_patient_quick_entry",
-		"Patient-idr_sb_patient_quick_entry",
+		"Patient-idr_patient_phone_no",
 		"Patient Appointment-idr_appointment_type",
 		"Physician-idr_supplier",
 		"Customer-idr_customer_first_name",
