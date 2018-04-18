@@ -18,21 +18,7 @@ frappe.ui.form.on("Patient Appointment", {
 		}
 
 		//Check if patient info is filled
-		frappe.call({
-			method: "idr_erpnext.api.check_patient_details",
-			args: {
-				patient: frm.doc.name,
-			}
-		}).done(function(r) {
-			console.log("Check patient details", r);
-			if (r && r.message == 0) {
-				frm.set_df_property("patient", "label", __("Patient") + '   <b style="color:red">[' + __("Customer details missing") + ']</b>');
-			} else {
-				frm.set_df_property("patient", "label", __("Patient"));
-			}
-		}).error(function(err) {
-			frappe.show_alert(__("Could not check patient details"));
-		});
+		check_patient_details(frm);
 	},
 	patient: function(frm) {
 		if (!frm.doc.patient) { return 0; }
@@ -45,6 +31,7 @@ frappe.ui.form.on("Patient Appointment", {
 		}).error(function(err) {
 			frappe.show_alert(__("Could not fetch earliest available doctor."));
 		});
+		check_patient_details(frm);
 	},
 	physician: function(frm) {
 		if (!frm.doc.physician) { return 0; }
@@ -67,3 +54,27 @@ frappe.ui.form.on("Patient Appointment", {
 frappe.ui.keys.on("alt+c", function(e) {
 	frappe.click_button("Check availability");
 });
+
+function check_patient_details(frm) {
+	if (frm.doc.patient) {
+		frappe.call({
+			method: "idr_erpnext.api.check_patient_details",
+			args: {
+				patient: frm.doc.patient,
+			}
+		}).done(function(r) {
+			console.log("Check patient details", r);
+			if (r && r.message == "0") {
+				frm.set_df_property("patient", "label", __("Patient") + '   <span class="badge" style="color:white;background-color:red">' + __("Customer information missing!") + '</span>');
+				$("button[data-doctype='Sales Invoice'].btn-new").attr('disabled', 'disabled');
+				cur_frm.custom_buttons["Sales Invoice"].hide();
+			} else {
+				frm.set_df_property("patient", "label", __("Patient"));
+				$("button[data-doctype='Sales Invoice'].btn-new").removeAttr('disabled');
+				cur_frm.custom_buttons["Sales Invoice"].show();
+			}
+		}).error(function(err) {
+			frappe.show_alert(__("Could not check patient details"));
+		});
+	}
+}
