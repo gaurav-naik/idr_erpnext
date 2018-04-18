@@ -67,11 +67,11 @@ function check_patient_details(frm) {
 			if (r && r.message == "0") {
 				frm.set_df_property("patient", "label", __("Patient") + '   <span class="badge" style="color:white;background-color:red">' + __("Customer information missing!") + '</span>');
 				$("button[data-doctype='Sales Invoice'].btn-new").attr('disabled', 'disabled');
-				cur_frm.custom_buttons["Sales Invoice"].hide();
+				cur_frm.custom_buttons["Invoice"].hide();
 			} else {
 				frm.set_df_property("patient", "label", __("Patient"));
 				$("button[data-doctype='Sales Invoice'].btn-new").removeAttr('disabled');
-				cur_frm.custom_buttons["Sales Invoice"].show();
+				cur_frm.custom_buttons["Invoice"].show();
 			}
 		}).error(function(err) {
 			frappe.show_alert(__("Could not check patient details"));
