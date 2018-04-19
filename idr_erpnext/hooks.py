@@ -143,7 +143,6 @@ fixtures =  [
 	{"dt":"Print Format", "filters": [["name", "in", [
 		"Consent Letter", 
 		"Medical Certificate",
-		"IDR Sales Invoice",
 		"IDR Fattura Paziente"
 	]]]}
 ]
