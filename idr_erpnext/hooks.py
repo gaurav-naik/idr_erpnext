@@ -132,7 +132,9 @@ fixtures =  [
 		"Physician-idr_supplier",
 		"Customer-idr_customer_first_name",
 		"Customer-idr_customer_last_name",
-		"Customer-idr_customer_place_of_birth"
+		"Customer-idr_customer_place_of_birth",
+		"Physician Schedule-idr_schedule_type",
+		"Physician Schedule Time Slot-idr_date"
 	]]]},
 	{"dt":"Property Setter", "filters": [["name", "in", [
 		"Patient-sex-default",
