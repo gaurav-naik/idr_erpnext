@@ -45,9 +45,13 @@ frappe.ui.form.on("Patient Appointment", {
 				frm.set_value("appointment_date", r.message);
 			}
 		}).error(function(err) {
-			console.log(err);
 			frappe.show_alert(__("Could not fetch earliest available date."));
 		});
+	},
+	appointment_date: function(frm) {
+		if (frm.doc.appointment_date) {
+			check_patient_details(frm);
+		}
 	}
 });
 
@@ -63,16 +67,17 @@ function check_patient_details(frm) {
 				patient: frm.doc.patient,
 			}
 		}).done(function(r) {
-			console.log("Check patient details", r);
 			if (r && r.message == "0") {
 				frm.set_df_property("patient", "label", __("Patient") + '   <span class="badge" style="color:white;background-color:red">' + __("Customer information missing!") + '</span>');
 				$("button[data-doctype='Sales Invoice'].btn-new").attr('disabled', 'disabled');
+
 				if (cur_frm.custom_buttons["Invoice"]) {
 					cur_frm.custom_buttons["Invoice"].hide();
 				}
 			} else {
 				frm.set_df_property("patient", "label", __("Patient"));
 				$("button[data-doctype='Sales Invoice'].btn-new").removeAttr('disabled');
+
 				if (cur_frm.custom_buttons["Invoice"]) {
 					cur_frm.custom_buttons["Invoice"].show();
 				}
