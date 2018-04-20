@@ -67,8 +67,12 @@ function check_patient_details(frm) {
 				patient: frm.doc.patient,
 			}
 		}).done(function(r) {
-			if (r && r.message == "0") {
-				frm.set_df_property("patient", "label", __("Patient") + '   <span class="badge" style="color:white;background-color:red">' + __("Customer information missing!") + '</span>');
+			console.log(r);
+			if (r && r.message && r.message.missing_details.length > 0) {
+				frm.set_df_property("patient", "label", 
+					__("Patient") + '<a class="badge" style="color:white;background-color:red" href="/desk#Form/Customer/' + r.message.patient_customer + '">' 
+					+ __("Customer information missing!") + '</a>'
+				);
 				$("button[data-doctype='Sales Invoice'].btn-new").attr('disabled', 'disabled');
 
 				if (cur_frm.custom_buttons["Invoice"]) {

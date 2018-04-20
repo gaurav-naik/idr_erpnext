@@ -193,11 +193,15 @@ def unlink_and_delete_sales_invoice(patient_appointment):
 def check_patient_details(patient):
 	#Check if Customer has First Name, Last Name, Place of Birth, Tax ID, Phone Number (Contact)
 
+	out = frappe._dict(patient_customer=None, missing_details=[])
+
 	patient_customer = frappe.db.get_value("Patient", patient, "customer")
 	if not patient_customer:
-		return "0"
+		return None
 
-	customer_tax_id = frappe.db.get_value("Customer", patient_customer, "tax_id")
+	out.patient_customer = patient_customer
+
+	customer = frappe.get_doc("Customer", patient_customer)
 
 	#Get existing address. Return 0 if not found.
 	existing_address_name = get_default_address("Customer", patient_customer)
@@ -208,15 +212,25 @@ def check_patient_details(patient):
 	existing_address = frappe.get_doc("Address",existing_address_name) 
 
 	#Get existing customer
-	out = existing_address.address_line1 is not None and \
-	existing_address.city is not None and \
-	existing_address.pincode is not None and \
-	customer_tax_id is not None
+	if not customer.idr_customer_place_of_birth:
+		out.missing_details.append(_("Place of Birth"))
 
-	if out == True:
-		return "1"
-	else:
-		return "0"
+	if not customer.idr_customer_date_of_birth:
+		out.missing_details.append(_("Date of Birth"))
+
+	if not customer.tax_id:
+		out.missing_details.append(_("Tax ID"))
+
+	if not existing_address.address_line1:
+		out.missing_details.append(_("Address Line 1"))
+
+	if not existing_address.city:
+		out.missing_details.append(_("City"))		
+
+	if not existing_address.pincode:
+		out.missing_details.append(_("Pincode"))
+
+	return out
 
 @frappe.whitelist()
 def idr_get_availability_data(date, physician):
