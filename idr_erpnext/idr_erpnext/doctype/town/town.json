@@ -1,15 +1,15 @@
 {
  "allow_copy": 0, 
  "allow_guest_to_view": 0, 
- "allow_import": 0, 
- "allow_rename": 0, 
+ "allow_import": 1, 
+ "allow_rename": 1, 
  "autoname": "field:town_name", 
  "beta": 0, 
  "creation": "2018-04-20 10:00:48.730985", 
  "custom": 0, 
  "docstatus": 0, 
  "doctype": "DocType", 
- "document_type": "", 
+ "document_type": "Document", 
  "editable_grid": 1, 
  "engine": "InnoDB", 
  "fields": [
@@ -84,7 +84,7 @@
  "issingle": 0, 
  "istable": 0, 
  "max_attachments": 0, 
- "modified": "2018-04-20 10:00:48.730985", 
+ "modified": "2018-04-20 12:54:13.368226", 
  "modified_by": "Administrator", 
  "module": "IDR ERPNext", 
  "name": "Town", 
@@ -135,9 +135,10 @@
  "quick_entry": 1, 
  "read_only": 0, 
  "read_only_onload": 0, 
+ "search_fields": "town_name, town_code", 
  "show_name_in_global_search": 0, 
  "sort_field": "modified", 
  "sort_order": "DESC", 
  "track_changes": 1, 
- "track_seen": 0
+ "track_seen": 1
 }
