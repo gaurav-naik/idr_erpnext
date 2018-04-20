@@ -66,5 +66,22 @@
   "property": "default_print_format", 
   "property_type": "Data", 
   "value": "IDR Fattura Paziente"
+ }, 
+ {
+  "_assign": null, 
+  "_comments": null, 
+  "_liked_by": null, 
+  "_user_tags": null, 
+  "default_value": null, 
+  "doc_type": "Customer", 
+  "docstatus": 0, 
+  "doctype": "Property Setter", 
+  "doctype_or_field": "DocField", 
+  "field_name": "customer_type", 
+  "modified": "2018-04-20 09:12:12.509409", 
+  "name": "Customer-customer_type-default", 
+  "property": "default", 
+  "property_type": "Text", 
+  "value": "Individual"
  }
 ]

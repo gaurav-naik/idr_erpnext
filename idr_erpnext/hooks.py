@@ -133,6 +133,7 @@ fixtures =  [
 		"Customer-idr_customer_first_name",
 		"Customer-idr_customer_last_name",
 		"Customer-idr_customer_place_of_birth",
+		"Customer-idr_customer_date_of_birth",
 		"Physician Schedule-idr_schedule_type",
 		"Physician Schedule Time Slot-idr_date"
 	]]]},
@@ -140,7 +141,8 @@ fixtures =  [
 		"Patient-sex-default",
 		"Sales Invoice-default_print_format",
 		"Physician-department-in_list_view",
-		"Patient Appointment-appointment_date-in_list_view"
+		"Patient Appointment-appointment_date-in_list_view",
+		"Customer-customer_type-default",
 	]]]},
 	{"dt":"Print Format", "filters": [["name", "in", [
 		"Consent Letter", 
