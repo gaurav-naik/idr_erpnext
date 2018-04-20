@@ -2,6 +2,7 @@ import frappe
 from frappe.contacts.doctype.address.address import get_address_display, get_default_address
 from frappe.contacts.doctype.contact.contact import get_default_contact
 from frappe import _
+from frappe.utils import getdate, cint
 
 @frappe.whitelist()
 def get_patient_address_display(address_name):
@@ -259,7 +260,7 @@ def idr_get_availability_data(date, physician):
 	if physician_schedule:
 		if physician_schedule.idr_schedule_type == "Date":
 			for t in physician_schedule.time_slots:
-				if date == t.date:
+				if date == t.idr_date:
 					available_slots.append(t)
 		else:
 			for t in physician_schedule.time_slots:
