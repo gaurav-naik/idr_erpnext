@@ -117,9 +117,9 @@ doc_events = {
 # Overriding Whitelisted Methods
 # ------------------------------
 #
-# override_whitelisted_methods = {
-# 	"frappe.desk.doctype.event.event.get_events": "idr_erpnext.event.get_events"
-# }
+override_whitelisted_methods = {
+	"erpnext.healthcare.doctype.patient_appointment.patient_appointment.get_availability_data":"idr_erpnext.api.idr_get_availability_data"
+}
 
 fixtures =  [
 	{"dt":"Custom Field", "filters": [["name", "in", [

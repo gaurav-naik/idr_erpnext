@@ -112,16 +112,40 @@ def get_earliest_available_date(physician):
 			"Sunday": 6
 		}[weekday]
 
-	timeslots = frappe.get_all("Physician Schedule Time Slot", filters={"parent": physician}, fields=["day", "from_time", "to_time"])
-
-	weekdays = list(set([timeslot.day for timeslot in timeslots]))
-	weekdays_with_dow_values = [{"day": weekday, "value": get_weekday_value(weekday)} for weekday in weekdays]
-
-	next_weekdays = [get_next_weekday(frappe.utils.getdate(), weekday.get("value")) for weekday in weekdays_with_dow_values]
+	physician_schedule_name = frappe.db.get_value("Physician", physician, "physician_schedule")
 	
-	next_earliest_weekday_date = min(next_weekdays)
+	if not physician_schedule_name:
+		frappe.throw(_("Dr {0} does not have a Physician Schedule. Add it in Physician master".format(physician)))
 
-	return next_earliest_weekday_date 
+	physician_schedule = frappe.get_doc("Physician Schedule", physician_schedule_name)
+
+	if physician_schedule.idr_schedule_type == "Date":
+		timeslots = frappe.get_all("Physician Schedule Time Slot", filters={"parent": physician, 
+			"idr_date": (">=", frappe.utils.getdate())}, 
+			fields=["idr_date", "from_time", "to_time"],
+			order_by="idr_date")
+
+		if not timeslots:
+			frappe.throw("Dr {0} is not avaialble on this date.".format(physician))
+
+		return timeslots[0].idr_date
+
+	else:
+
+		timeslots = frappe.get_all("Physician Schedule Time Slot", filters={"parent": physician}, fields=["day", "from_time", "to_time"])
+
+		if not timeslots:
+			frappe.throw("Dr {0} is not avaialble on this date.".format(physician))
+
+		weekdays = list(set([timeslot.day for timeslot in timeslots]))
+		weekdays_with_dow_values = [{"day": weekday, "value": get_weekday_value(weekday)} for weekday in weekdays]
+
+		next_weekdays = [get_next_weekday(frappe.utils.getdate(), weekday.get("value")) for weekday in weekdays_with_dow_values]
+		
+		next_earliest_weekday_date = min(next_weekdays)
+
+		return next_earliest_weekday_date 
+
 
 @frappe.whitelist()
 def get_earliest_available_physician_and_date():
@@ -139,8 +163,6 @@ def get_earliest_available_physician_and_date():
 			"earliest_available_date": get_earliest_available_date(physician.name)
 		} for physician in soci_physicians
 	]
-
-	print (earliest_physician_availability_list)
 
 	earliest_physician_availability = min(earliest_physician_availability_list, key=lambda x:x.get("earliest_available_date"))
 
@@ -195,4 +217,65 @@ def check_patient_details(patient):
 		return "1"
 	else:
 		return "0"
+
+@frappe.whitelist()
+def idr_get_availability_data(date, physician):
+	"""
+	Get availability data of 'physician' on 'date'
+	:param date: Date to check in schedule
+	:param physician: Name of the physician
+	:return: dict containing a list of available slots, list of appointments and time of appointments
+	"""
+	date = getdate(date)
+	weekday = date.strftime("%A")
+
+	available_slots = []
+	physician_schedule_name = None
+	physician_schedule = None
+	time_per_appointment = None
+
+	# get physicians schedule
+	physician_schedule_name = frappe.db.get_value("Physician", physician, "physician_schedule")
+	if physician_schedule_name:
+		physician_schedule = frappe.get_doc("Physician Schedule", physician_schedule_name)
+		time_per_appointment = frappe.db.get_value("Physician", physician, "time_per_appointment")
+	else:
+		frappe.throw(_("Dr {0} does not have a Physician Schedule. Add it in Physician master".format(physician)))
+
+	if physician_schedule:
+		if physician_schedule.idr_schedule_type == "Date":
+			for t in physician_schedule.time_slots:
+				if date == t.date:
+					available_slots.append(t)
+		else:
+			for t in physician_schedule.time_slots:
+				if weekday == t.day:
+					available_slots.append(t)
+			
 	
+	# `time_per_appointment` should never be None since validation in `Patient` is supposed to prevent
+	# that. However, it isn't impossible so we'll prepare for that.
+	if not time_per_appointment:
+		frappe.throw(_('"Time Per Appointment" hasn"t been set for Dr {0}. Add it in Physician master.').format(physician))
+
+	# if physician not available return
+	if not available_slots:
+		# TODO: return available slots in nearby dates
+		frappe.throw(_("Physician not available on {0}").format(weekday))
+
+	# if physician on leave return
+
+	# if holiday return
+	# if is_holiday(weekday):
+
+	# get appointments on that day for physician
+	appointments = frappe.get_all(
+		"Patient Appointment",
+		filters={"physician": physician, "appointment_date": date},
+		fields=["name", "appointment_time", "duration", "status"])
+
+	return {
+		"available_slots": available_slots,
+		"appointments": appointments,
+		"time_per_appointment": time_per_appointment
+	}
