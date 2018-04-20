@@ -68,7 +68,7 @@ function check_patient_details(frm) {
 			}
 		}).done(function(r) {
 			console.log(r);
-			if (r && r.message && r.message.missing_details.length > 0) {
+			if (r && r.message && r.message.missing_details && r.message.missing_details.length > 0) {
 				frm.set_df_property("patient", "label", 
 					__("Patient") + '<a class="badge" style="color:white;background-color:red" href="/desk#Form/Customer/' + r.message.patient_customer + '">' 
 					+ __("Customer information missing!") + '</a>'
