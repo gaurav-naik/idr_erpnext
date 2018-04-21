@@ -198,7 +198,9 @@ def check_patient_details(patient):
 
 	patient_customer = frappe.db.get_value("Patient", patient, "customer")
 	if not patient_customer:
-		return None
+		frappe.throw(_("Patient {0} does not have a linked customer.").format(patient))
+		out.missing_details.append(_("Customer"))
+		return out
 
 	out.patient_customer = patient_customer
 
@@ -208,7 +210,8 @@ def check_patient_details(patient):
 	existing_address_name = get_default_address("Customer", patient_customer)
 
 	if not existing_address_name:
-		return "0"
+		out.missing_details.append(_("Address"))
+		return out
 
 	existing_address = frappe.get_doc("Address",existing_address_name) 
 
