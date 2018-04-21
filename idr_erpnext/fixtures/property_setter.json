@@ -83,5 +83,39 @@
   "property": "default", 
   "property_type": "Text", 
   "value": "Individual"
+ }, 
+ {
+  "_assign": null, 
+  "_comments": null, 
+  "_liked_by": null, 
+  "_user_tags": null, 
+  "default_value": null, 
+  "doc_type": "Customer", 
+  "docstatus": 0, 
+  "doctype": "Property Setter", 
+  "doctype_or_field": "DocField", 
+  "field_name": "basic_info", 
+  "modified": "2018-04-21 11:37:22.454645", 
+  "name": "Customer-basic_info-collapsible", 
+  "property": "collapsible", 
+  "property_type": "Check", 
+  "value": "1"
+ }, 
+ {
+  "_assign": null, 
+  "_comments": null, 
+  "_liked_by": null, 
+  "_user_tags": null, 
+  "default_value": null, 
+  "doc_type": "Customer", 
+  "docstatus": 0, 
+  "doctype": "Property Setter", 
+  "doctype_or_field": "DocField", 
+  "field_name": "basic_info", 
+  "modified": "2018-04-21 11:37:22.472440", 
+  "name": "Customer-basic_info-collapsible_depends_on", 
+  "property": "collapsible_depends_on", 
+  "property_type": "Data", 
+  "value": "1"
  }
 ]

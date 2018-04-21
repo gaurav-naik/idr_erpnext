@@ -134,8 +134,12 @@ fixtures =  [
 		"Customer-idr_customer_last_name",
 		"Customer-idr_customer_place_of_birth",
 		"Customer-idr_customer_date_of_birth",
+		"Customer-idr_customer_gender",
+		"Customer-idr_customer_tax_id",
+		"Customer-idr_customer_cb_1",
+		"Customer-idr_customer_quick_entry",
 		"Physician Schedule-idr_schedule_type",
-		"Physician Schedule Time Slot-idr_date"
+		"Physician Schedule Time Slot-idr_date",
 	]]]},
 	{"dt":"Property Setter", "filters": [["name", "in", [
 		"Patient-sex-default",
@@ -143,6 +147,8 @@ fixtures =  [
 		"Physician-department-in_list_view",
 		"Patient Appointment-appointment_date-in_list_view",
 		"Customer-customer_type-default",
+		"Customer-basic_info-collapsible",
+		"Customer-basic_info-collapsible_depends_on"
 	]]]},
 	{"dt":"Print Format", "filters": [["name", "in", [
 		"Consent Letter", 
