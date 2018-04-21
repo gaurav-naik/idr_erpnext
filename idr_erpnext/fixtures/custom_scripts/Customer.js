@@ -3,6 +3,6 @@ frappe.ui.form.on("Customer", {
 		frm.set_value("gender", frm.doc.idr_customer_gender);
 	},
 	idr_customer_tax_id:function(frm) {
-		frm.set_value("tax_id", frm);
+		frm.set_value("tax_id", frm.doc.idr_customer_tax_id);
 	}
 });
