@@ -1,4 +1,8 @@
 frappe.ui.form.on("Patient Appointment", {
+	onload: function(frm) {
+		//Check if patient info is filled
+		check_patient_details(frm);
+	},
 	refresh: function(frm) {
 		if (frm.doc.sales_invoice) {
 			frm.add_custom_button(__("Delete Linked Invoice"), function() {
