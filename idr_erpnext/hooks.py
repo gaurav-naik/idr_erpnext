@@ -154,5 +154,8 @@ fixtures =  [
 		"Consent Letter", 
 		"Medical Certificate",
 		"IDR Fattura Paziente"
+	]]]},
+	{"dt":"Letter Head", "filters": [["name", "in", [
+		"IDR"
 	]]]}
 ]
