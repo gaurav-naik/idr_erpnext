@@ -117,39 +117,42 @@ doc_events = {
 # Overriding Whitelisted Methods
 # ------------------------------
 #
-# override_whitelisted_methods = {
-# 	"frappe.desk.doctype.event.event.get_events": "idr_erpnext.event.get_events"
-# }
+override_whitelisted_methods = {
+	"erpnext.healthcare.doctype.patient_appointment.patient_appointment.get_availability_data":"idr_erpnext.api.idr_get_availability_data"
+}
 
 fixtures =  [
 	{"dt":"Custom Field", "filters": [["name", "in", [
-		"Patient-idr_patient_address",
-		"Patient-idr_patient_address_display", 
-		"Patient-idr_place_of_birth",
-		"Patient-idr_sb_patient_details",
-		"Patient-idr_address_line1",
-		"Patient-idr_address_line2",
-		"Patient-idr_address_city",
-		"Patient-idr_address_pincode",
-		"Patient-idr_patient_codice_fiscale",
+		"Patient-idr_sb_patient_quick_entry",
 		"Patient-idr_patient_first_name",
 		"Patient-idr_patient_last_name",
-		"Patient-idr_patient_phone_no",
 		"Patient-idr_cb_patient_quick_entry",
-		"Patient-idr_sb_patient_quick_entry",
+		"Patient-idr_patient_phone_no",
 		"Patient Appointment-idr_appointment_type",
-		"Physician-idr_supplier"
+		"Physician-idr_supplier",
+		"Customer-idr_customer_quick_entry",
+		"Customer-idr_customer_first_name",
+		"Customer-idr_customer_last_name",
+		"Customer-idr_customer_gender",
+		"Customer-idr_customer_cb_1",
+		"Customer-idr_customer_date_of_birth",
+		"Customer-idr_customer_place_of_birth",
+		"Customer-idr_customer_tax_id",
+		"Physician Schedule-idr_schedule_type",
+		"Physician Schedule Time Slot-idr_date",
 	]]]},
 	{"dt":"Property Setter", "filters": [["name", "in", [
 		"Patient-sex-default",
 		"Sales Invoice-default_print_format",
 		"Physician-department-in_list_view",
-		"Patient Appointment-appointment_date-in_list_view"
+		"Patient Appointment-appointment_date-in_list_view",
+		"Customer-customer_type-default",
+		"Customer-basic_info-collapsible",
+		"Customer-basic_info-collapsible_depends_on"
 	]]]},
 	{"dt":"Print Format", "filters": [["name", "in", [
 		"Consent Letter", 
 		"Medical Certificate",
-		"IDR Sales Invoice",
 		"IDR Fattura Paziente"
 	]]]}
 ]
