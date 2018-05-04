@@ -30,14 +30,17 @@ def generate_codice_fiscale(first_name, last_name, date_of_birth, gender, place_
 	from codicefiscale import build
 
 	gender = 'M' if gender == 'Male' else 'F'
-	municipality = frappe.db.get_value("Town", place_of_birth, "")
+	municipality = frappe.db.get_value("Town", place_of_birth, "town_code")
 
-	return build(last_name, first_name, date_of_birth, "M" if gender == "Male" else "F", municipality)
+	return build(last_name, first_name, frappe.utils.getdate(date_of_birth), "M" if gender == "Male" else "F", municipality)
 
 @frappe.whitelist()
 def validate_codice_fiscale(codice_fiscale):
 	from codicefiscale import isvalid
-	return isvalid(codice_fiscale)
+
+	valid = isvalid(codice_fiscale)
+	
+	return _("Codice Fiscale is valid") if valid else _("Codice Fiscale is invalid")
 
 @frappe.whitelist()
 def get_procedure_data_from_appointment(patient_appointment):
