@@ -1,4 +1,10 @@
 frappe.ui.form.on("Customer", {
+	onload: function(frm) {
+		frm.fields_dict.idr_codice_fiscale_buttons.html(
+			'<button class="btn btn-xs btn-default generate-cf">' + __("Generate") + '</button>' +
+			'<button class="btn btn-xs btn-default validate-cf">' + __("Validate") + '</button>'
+		);
+	},
 	refresh: function(frm) {
 		$(".generate-cf").on("click", function() {
 			frappe.call({
@@ -12,9 +18,10 @@ frappe.ui.form.on("Customer", {
 				}
 			}).done(function(r) {
 				console.log(r);
-				frm.set_value(r.message);
+				frm.set_value("idr_customer_tax_id", r.message);
 			}).error(function(err) {
-				frm.show_alert(__("Unable to set codice fiscale"));
+				frappe.show_alert(__("Unable to set codice fiscale"));
+				console.log(err);
 			});
 		});
 		$(".validate-cf").on("click", function() {
@@ -25,9 +32,9 @@ frappe.ui.form.on("Customer", {
 				}
 			}).done(function(r) {
 				console.log(r);
-				frappe.show_alert("Codice Fiscale Verified")
+				frappe.msgprint(r.message);
 			}).error(function(err) {
-				frm.show_alert(__("Unable to set codice fiscale"))
+				frm.show_alert(__("Unable to set codice fiscale"));
 			});
 		});
 	},
