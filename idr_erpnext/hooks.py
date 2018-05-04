@@ -118,7 +118,8 @@ doc_events = {
 # ------------------------------
 #
 override_whitelisted_methods = {
-	"erpnext.healthcare.doctype.patient_appointment.patient_appointment.get_availability_data":"idr_erpnext.api.idr_get_availability_data"
+	"erpnext.healthcare.doctype.patient_appointment.patient_appointment.get_availability_data":"idr_erpnext.api.idr_get_availability_data",
+	"erpnext.healthcare.doctype.patient_appointment.patient_appointment.create_invoice":"idr_erpnext.api.idr_create_invoice"
 }
 
 fixtures =  [
