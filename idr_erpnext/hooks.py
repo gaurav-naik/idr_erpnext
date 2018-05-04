@@ -141,6 +141,7 @@ fixtures =  [
 		"Customer-idr_customer_tax_id",
 		"Physician Schedule-idr_schedule_type",
 		"Physician Schedule Time Slot-idr_date",
+		"Customer-idr_codice_fiscale_buttons"
 	]]]},
 	{"dt":"Property Setter", "filters": [["name", "in", [
 		"Patient-sex-default",
