@@ -150,7 +150,11 @@ fixtures =  [
 		"Patient Appointment-appointment_date-in_list_view",
 		"Customer-customer_type-default",
 		"Customer-basic_info-collapsible",
-		"Customer-basic_info-collapsible_depends_on"
+		"Customer-basic_info-collapsible_depends_on",
+		"Patient Appointment-title_field",
+		"Patient Appointment-patient-in_list_view",
+		"Patient Appointment-appointment_time-in_list_view",
+		"Patient Appointment-status-in_list_view"
 	]]]},
 	{"dt":"Print Format", "filters": [["name", "in", [
 		"Consent Letter", 
@@ -159,5 +163,8 @@ fixtures =  [
 	]]]},
 	{"dt":"Letter Head", "filters": [["name", "in", [
 		"IDR"
+	]]]},
+	{"dt":"Calendar View", "filters": [["name", "in", [
+		"IDR Patient Appointment"
 	]]]}
 ]
