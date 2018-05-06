@@ -409,7 +409,9 @@ def create_doctor_invoices(names, filters):
 			"qty": 1,
 			"rate": rate,
 			"amount": rate,
-			"conversion_factor":1 
+			"conversion_factor":1,
+			"idr_patient_appointment": appointment.name,
+			"idr_patient_appointment_invoice": appointment.sales_invoice
 		})
 
 	taxes = get_default_taxes_and_charges("Purchase Taxes and Charges Template", company=frappe.defaults.get_defaults().get("company"))
