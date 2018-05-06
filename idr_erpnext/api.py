@@ -1,4 +1,5 @@
 import frappe
+import json
 from frappe.contacts.doctype.address.address import get_address_display, get_default_address
 from frappe.contacts.doctype.contact.contact import get_default_contact
 from frappe import _
@@ -360,3 +361,64 @@ def idr_create_invoice(company, physician, patient, appointment_id, appointment_
 		frappe.db.set_value("Consultation", consultation[0][0], "invoice", sales_invoice.name)
 
 	return sales_invoice.name
+
+@frappe.whitelist()
+def create_doctor_invoices(names, filters):
+	filters = json.loads(filters)
+	names = json.loads(names)
+
+	if len(filters) == 0:
+		frappe.throw(_("Please select a doctor and date"))
+
+	filter_dict = frappe._dict()
+	for filter_criterion in filters:
+		filter_dict.update({filter_criterion[1]:filter_criterion[3]})
+
+	# #Please add a supplier against a Physician if it doesn't already exist.
+	physician_supplier = frappe.db.get_value("Physician", filter_dict.get("physician"), "idr_supplier")
+
+	#If submitted purchase invoice exists, then alert.
+	existing_invoice = frappe.db.get_value("Purchase Invoice", {"supplier": "Riccardo Bono", "posting_date": "2018-05-06"})
+	if existing_invoice:
+		frappe.throw(_("Invoice <a href='desk#Form/Purchase%20Invoice/{0}'>{0}</a> already exists for this doctor and date.".format(existing_invoice)))
+
+	physician_supplier_type = frappe.db.get_value("Supplier", physician_supplier, "supplier_type")
+
+	purchase_invoice = frappe.new_doc("Purchase Invoice")
+	purchase_invoice.supplier = physician_supplier
+
+	if physician_supplier_type == "SOCI":
+		purchase_invoice.price_list = "SOCI"
+	elif physician_supplier_type == "NON SOCI":
+		purchase_invoice.price_list = "NON SOCI"
+	else:
+		purchase_invoice.price_list = "Standard Buying"
+
+	for appointment_name in names:
+		appointment = frappe.get_doc("Patient Appointment", appointment_name)
+
+		if not appointment.sales_invoice:
+			continue
+
+		rate = frappe.db.get_value("Item Price", 
+				filters={"price_list": purchase_invoice.price_list, "item_code": appointment.idr_appointment_type}, 
+				fieldname="price_list_rate")
+
+		purchase_invoice.append("items", {
+			"item_code": appointment.idr_appointment_type,
+			"qty": 1,
+			"rate": rate,
+			"amount": rate,
+			"conversion_factor":1,
+			"idr_patient_appointment": appointment.name,
+			"idr_patient_appointment_invoice": appointment.sales_invoice
+		})
+
+	taxes = get_default_taxes_and_charges("Purchase Taxes and Charges Template", company=frappe.defaults.get_defaults().get("company"))
+	
+	if taxes.get('taxes'):
+		purchase_invoice.update(taxes)
+
+	purchase_invoice.save()
+
+	frappe.msgprint(_("Doctor Invoice <a href='desk#Form/Purchase%20Invoice/{0}'>{0}</a> created.".format(purchase_invoice.name)))

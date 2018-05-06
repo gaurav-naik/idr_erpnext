@@ -27,7 +27,9 @@ app_license = "GPL v3"
 
 # include js in doctype views
 # doctype_js = {"doctype" : "public/js/doctype.js"}
-# doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
+doctype_list_js = {
+	"Patient Appointment" : "public/js/patient_appointment_list.js"
+}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
 
@@ -141,7 +143,10 @@ fixtures =  [
 		"Customer-idr_customer_tax_id",
 		"Physician Schedule-idr_schedule_type",
 		"Physician Schedule Time Slot-idr_date",
-		"Customer-idr_codice_fiscale_buttons"
+		"Customer-idr_codice_fiscale_buttons",
+		"Purchase Invoice Item-idr_sb_patient_appointment",
+		"Purchase Invoice Item-idr_patient_appointment",
+		"Purchase Invoice Item-idr_patient_appointment_invoice"
 	]]]},
 	{"dt":"Property Setter", "filters": [["name", "in", [
 		"Patient-sex-default",
