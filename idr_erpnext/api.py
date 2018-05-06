@@ -378,9 +378,9 @@ def create_doctor_invoices(names, filters):
 	physician_supplier = frappe.db.get_value("Physician", filter_dict.get("physician"), "idr_supplier")
 
 	#If submitted purchase invoice exists, then alert.
-	existing_invoice = frappe.db.get_value("Purchase Invoice", {"supplier": "Riccardo Bono", "posting_date": "2018-05-06", "docstatus":1})
+	existing_invoice = frappe.db.get_value("Purchase Invoice", {"supplier": "Riccardo Bono", "posting_date": "2018-05-06"})
 	if existing_invoice:
-		frappe.throw(__("Doctor Invoice already exists for this doctor and date"))
+		frappe.throw(_("Invoice <a href='desk#Form/Purchase%20Invoice/{0}'>{0}</a> already exists for this doctor and date.".format(existing_invoice)))
 
 	physician_supplier_type = frappe.db.get_value("Supplier", physician_supplier, "supplier_type")
 
