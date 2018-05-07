@@ -401,7 +401,7 @@ def create_doctor_invoices(names, filters):
 			continue
 
 		rate = frappe.db.get_value("Item Price", 
-				filters={"price_list": purchase_invoice.price_list, "item_code": appointment.idr_appointment_type}, 
+				filters={"price_list": purchase_invoice.buying_price_list, "item_code": appointment.idr_appointment_type}, 
 				fieldname="price_list_rate")
 
 		purchase_invoice.append("items", {
