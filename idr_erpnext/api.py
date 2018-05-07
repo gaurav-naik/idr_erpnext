@@ -378,9 +378,19 @@ def create_doctor_invoices(names, filters):
 	physician_supplier = frappe.db.get_value("Physician", filter_dict.get("physician"), "idr_supplier")
 
 	#If submitted purchase invoice exists, then alert.
-	existing_invoice = frappe.db.get_value("Purchase Invoice", {"supplier": physician_supplier, "posting_date": filter_dict.get("date")})
-	if existing_invoice:
-		frappe.throw(_("Invoice <a href='desk#Form/Purchase%20Invoice/{0}'>{0}</a> already exists for this doctor and date.".format(existing_invoice)))
+	# existing_invoice = frappe.db.get_value("Purchase Invoice", {"supplier": physician_supplier, "posting_date": filter_dict.get("date")})
+	# if existing_invoice:
+	# 	frappe.throw(_("Invoice <a href='desk#Form/Purchase%20Invoice/{0}'>{0}</a> already exists for this doctor and date.".format(existing_invoice)))
+
+	#If appointments already exist in other invoice, throw an error
+	appointments_in_other_invoices = frappe.get_all("Purchase Invoice Item", 
+		filters={"idr_patient_appointment": ('in', names)}, 
+		fields=["parent", "idr_patient_appointment"])
+
+	if len(appointments_in_other_invoices) > 0:
+		appointments_in_other_invoices_list = [a.idr_patient_appointment for a in appointments_in_other_invoices]
+		other_invoices = [a.parent for a in appointments_in_other_invoices]
+		frappe.throw(_("Appointment(s) {0} already added to invoice(s) {1}.").format(", ".join(appointments_in_other_invoices_list), ", ".join(other_invoices)))
 
 	physician_supplier_type = frappe.db.get_value("Supplier", physician_supplier, "supplier_type")
 
@@ -398,7 +408,7 @@ def create_doctor_invoices(names, filters):
 		appointment = frappe.get_doc("Patient Appointment", appointment_name)
 
 		if not appointment.sales_invoice:
-			continue
+			frappe.throw(_("Appointment {0} does not have a linked Sales Invoice").format(appointment_name))
 
 		rate = frappe.db.get_value("Item Price", 
 				filters={"price_list": purchase_invoice.buying_price_list, "item_code": appointment.idr_appointment_type}, 
