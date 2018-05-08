@@ -176,5 +176,8 @@ fixtures =  [
 	]]]},
 	{"dt":"Calendar View", "filters": [["name", "in", [
 		"IDR Patient Appointment"
+	]]]},
+	{"dt":"Report", "filters": [["name", "in", [
+		"Lista Appuntamenti"
 	]]]}
 ]
