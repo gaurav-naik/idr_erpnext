@@ -148,7 +148,8 @@ fixtures =  [
 		"Purchase Invoice Item-idr_patient_appointment",
 		"Purchase Invoice Item-idr_patient_appointment_invoice",
 		"diagnosi_section",
-		"diagnosi"
+		"diagnosi",
+		"idr_servizio"
 	]]]},
 	{"dt":"Property Setter", "filters": [["name", "in", [
 		"Patient-sex-default",
@@ -164,7 +165,8 @@ fixtures =  [
 		"Patient Appointment-status-in_list_view",
 		"Sales Invoice-project-hidden",
 		"Sales Invoice-is_pos-hidden",
-		"Sales Invoice-read_only_onload"
+		"Sales Invoice-read_only_onload",
+		"Patient Appointment-read_only_onload"
 	]]]},
 	{"dt":"Print Format", "filters": [["name", "in", [
 		"Consent Letter", 
