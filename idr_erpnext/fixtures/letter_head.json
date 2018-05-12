@@ -1,13 +1,13 @@
 [
  {
-  "content": "<div style=\"text-align: center;\"><img src=\"/files/LOGO-IDR-FINALE25b777.png\" style=\"width: 50%;\"><br></div><hr>", 
+  "content": "<div style=\"text-align: center;\"><img src=\"/files/LOGO-IDR-FINALE.png\" style=\"width: 50%;\"><br></div>\n<hr>", 
   "disabled": 0, 
   "docstatus": 0, 
   "doctype": "Letter Head", 
   "footer": "<div><br></div><hr><div style=\"text-align: center;\">Istituto Romano di Dermatologia e Chirurgia Laser S.r.l. - P.zza Bologna 22 00162 Roma P.I.: 09003521003<br></div>", 
   "is_default": 1, 
   "letter_head_name": "IDR", 
-  "modified": "2018-05-09 00:35:10.261785", 
+  "modified": "2018-05-12 11:17:55.608166", 
   "name": "IDR"
  }
 ]
