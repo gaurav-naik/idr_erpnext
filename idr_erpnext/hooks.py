@@ -86,30 +86,21 @@ doc_events = {
 		"on_update": "idr_erpnext.api.patient_on_update"
 	},
 	"Physician": {
-		"after_insert": "idr_erpnext.api.physician_after_insert"
+		"after_insert": "idr_erpnext.api.idr_physician_after_insert"
+	},
+	"Patient Appointment": {
+		"before_insert": "idr_erpnext.api.idr_patient_appointment_before_insert"
 	}
 }
 
 # Scheduled Tasks
 # ---------------
 
-# scheduler_events = {
-# 	"all": [
-# 		"idr_erpnext.tasks.all"
-# 	],
-# 	"daily": [
-# 		"idr_erpnext.tasks.daily"
-# 	],
-# 	"hourly": [
-# 		"idr_erpnext.tasks.hourly"
-# 	],
-# 	"weekly": [
-# 		"idr_erpnext.tasks.weekly"
-# 	]
-# 	"monthly": [
-# 		"idr_erpnext.tasks.monthly"
-# 	]
-# }
+scheduler_events = {
+	"daily": [
+		"idr_erpnext.tasks.daily"
+	],
+}
 
 # Testing
 # -------
@@ -149,7 +140,8 @@ fixtures =  [
 		"Purchase Invoice Item-idr_patient_appointment_invoice",
 		"Sales Invoice-diagnosi",
 		"Sales Invoice-diagnosi_section",
-		"Patient Appointment-idr_servizio"
+		"Patient Appointment-idr_servizio",
+		"Patient Appointment-idr_appointment_description"
 	]]]},
 	{"dt":"Property Setter", "filters": [["name", "in", [
 		"Patient-sex-default",

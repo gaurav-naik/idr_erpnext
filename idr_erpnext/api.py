@@ -56,7 +56,7 @@ def get_procedure_data_from_appointment(patient_appointment):
 	return out
 
 
-def physician_after_insert(doc, method):
+def idr_physician_after_insert(doc, method):
 	#Create Supplier for invoicing
 	supplier = frappe.new_doc("Supplier")
 	supplier.supplier_name = " ".join(filter(None, [doc.first_name, doc.middle_name, doc.last_name]))
@@ -432,3 +432,13 @@ def create_doctor_invoices(names, filters):
 	purchase_invoice.save()
 
 	frappe.msgprint(_("Doctor Invoice <a href='desk#Form/Purchase%20Invoice/{0}'>{0}</a> created.".format(purchase_invoice.name)))
+
+
+def idr_patient_appointment_before_insert(doc, method):
+	generate_appointment_description(doc, method) #For displaying in Calendar View (Enzo Gorlomi-F.V.)
+
+def generate_appointment_description(doc, method):
+	doc.idr_appointment_description = "{0}-{1}".format(
+		doc.patient_name,
+		".".join([physician[0] for physician in doc.physician.split(" ")]) + "."
+	)

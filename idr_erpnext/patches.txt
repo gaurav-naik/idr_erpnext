@@ -1,0 +1,1 @@
+idr_erpnext.patches.update_appointment_description_in_old_appointments
