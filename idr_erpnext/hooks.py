@@ -140,7 +140,8 @@ fixtures =  [
 		"Purchase Invoice Item-idr_patient_appointment_invoice",
 		"Sales Invoice-diagnosi",
 		"Sales Invoice-diagnosi_section",
-		"Patient Appointment-idr_servizio"
+		"Patient Appointment-idr_servizio",
+		"Patient Appointment-idr_appointment_description"
 	]]]},
 	{"dt":"Property Setter", "filters": [["name", "in", [
 		"Patient-sex-default",
