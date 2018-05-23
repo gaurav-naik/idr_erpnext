@@ -27,8 +27,9 @@ frappe.ui.form.on("Patient Appointment", {
 	patient: function(frm) {
 		if (!frm.doc.patient) { return 0; }
 		frappe.call({
-			method: "idr_erpnext.api.get_earliest_available_physician_and_date"// get_physician_with_earliest_timeslot"
+			method: "idr_erpnext.api.get_earliest_available_physician_and_date2" //get_earliest_available_physician_and_date"// get_physician_with_earliest_timeslot"
 		}).done(function(r) {
+			console.log("Physician", r);
 			if (!r.exc) {
 				frm.set_value("physician", r.message.physician);
 			}
@@ -40,7 +41,7 @@ frappe.ui.form.on("Patient Appointment", {
 	physician: function(frm) {
 		if (!frm.doc.physician) { return 0; }
 		frappe.call({
-			method: "idr_erpnext.api.get_earliest_available_date",
+			method: "idr_erpnext.api.get_earliest_available_date2",
 			args: {
 				"physician": frm.doc.physician
 			}
