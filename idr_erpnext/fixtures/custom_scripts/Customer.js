@@ -4,8 +4,7 @@ frappe.ui.form.on("Customer", {
 			'<button class="btn btn-xs btn-default generate-cf">' + __("Generate") + '</button>' +
 			'<button class="btn btn-xs btn-default validate-cf">' + __("Validate") + '</button>'
 		);
-	},
-	refresh: function(frm) {
+
 		$(".generate-cf").on("click", function() {
 			frappe.call({
 				method: "idr_erpnext.api.generate_codice_fiscale",
@@ -17,11 +16,10 @@ frappe.ui.form.on("Customer", {
 					place_of_birth: frm.doc.idr_customer_place_of_birth
 				}
 			}).done(function(r) {
-				console.log(r);
 				frm.set_value("idr_customer_tax_id", r.message);
+				frm.refresh();
 			}).error(function(err) {
 				frappe.show_alert(__("Unable to set codice fiscale"));
-				console.log(err);
 			});
 		});
 		$(".validate-cf").on("click", function() {
@@ -31,7 +29,7 @@ frappe.ui.form.on("Customer", {
 					codice_fiscale: frm.doc.idr_customer_tax_id, 
 				}
 			}).done(function(r) {
-				console.log(r);
+				frm.refresh();
 				frappe.msgprint(r.message);
 			}).error(function(err) {
 				frm.show_alert(__("Unable to set codice fiscale"));
