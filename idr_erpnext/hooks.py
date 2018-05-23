@@ -111,7 +111,7 @@ scheduler_events = {
 # ------------------------------
 #
 override_whitelisted_methods = {
-	"erpnext.healthcare.doctype.patient_appointment.patient_appointment.get_availability_data":"idr_erpnext.api.idr_get_availability_data",
+	"erpnext.healthcare.doctype.patient_appointment.patient_appointment.get_availability_data":"idr_erpnext.api.idr_get_availability_data1",
 	"erpnext.healthcare.doctype.patient_appointment.patient_appointment.create_invoice":"idr_erpnext.api.idr_create_invoice"
 }
 
@@ -132,6 +132,7 @@ fixtures =  [
 		"Customer-idr_customer_date_of_birth",
 		"Customer-idr_customer_place_of_birth",
 		"Customer-idr_customer_tax_id",
+		"Customer-idr_sb_customer_codice_fiscale",
 		"Physician Schedule-idr_schedule_type",
 		"Physician Schedule Time Slot-idr_date",
 		"Customer-idr_codice_fiscale_buttons",
@@ -141,7 +142,8 @@ fixtures =  [
 		"Sales Invoice-diagnosi",
 		"Sales Invoice-diagnosi_section",
 		"Patient Appointment-idr_servizio",
-		"Patient Appointment-idr_appointment_description"
+		"Patient Appointment-idr_appointment_description",
+		"Physician-idr_physician_schedule"
 	]]]},
 	{"dt":"Property Setter", "filters": [["name", "in", [
 		"Patient-sex-default",
@@ -158,7 +160,9 @@ fixtures =  [
 		"Sales Invoice-project-hidden",
 		"Sales Invoice-is_pos-hidden",
 		"Sales Invoice-read_only_onload",
-		"Patient Appointment-read_only_onload"
+		"Patient Appointment-read_only_onload",
+		"Customer-basic_info-hidden",
+		"Customer-currency_and_price_list-hidden"
 	]]]},
 	{"dt":"Print Format", "filters": [["name", "in", [
 		"Consent Letter", 
