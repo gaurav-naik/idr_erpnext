@@ -60,7 +60,7 @@ def idr_physician_after_insert(doc, method):
 	#Create Supplier for invoicing
 	supplier = frappe.new_doc("Supplier")
 	supplier.supplier_name = " ".join(filter(None, [doc.first_name, doc.middle_name, doc.last_name]))
-	supplier.supplier_type = "Non Member"
+	supplier.supplier_type = "NON SOCI"
 	supplier.save()
 
 	doc.db_set("idr_supplier", supplier.name)
@@ -316,6 +316,63 @@ def idr_get_availability_data(date, physician):
 	}
 
 @frappe.whitelist()
+def idr_get_availability_data1(date, physician):
+	"""
+	Get availability data of 'physician' on 'date'
+	:param date: Date to check in schedule
+	:param physician: Name of the physician
+	:return: dict containing a list of available slots, list of appointments and time of appointments
+	"""
+	date = getdate(date)
+	weekday = date.strftime("%A")
+
+	available_slots = []
+	physician_schedule_name = None
+	physician_schedule = None
+	time_per_appointment = None
+
+	# get physicians schedule
+	physician_schedule_name = frappe.db.get_value("Physician", physician, "idr_physician_schedule")
+	if physician_schedule_name:
+		physician_schedule = frappe.get_doc("IDR Physician Schedule", physician_schedule_name)
+		time_per_appointment = frappe.db.get_value("Physician", physician, "time_per_appointment")
+	else:
+		frappe.throw(_("Dr {0} does not have a Physician Schedule. Add it in Physician master".format(physician)))
+
+	if physician_schedule:
+		for t in physician_schedule.time_slots:
+			if date == t.slot_date:
+				available_slots.append(t)
+			
+	
+	# `time_per_appointment` should never be None since validation in `Patient` is supposed to prevent
+	# that. However, it isn't impossible so we'll prepare for that.
+	if not time_per_appointment:
+		frappe.throw(_('"Time Per Appointment" hasn"t been set for Dr {0}. Add it in Physician master.').format(physician))
+
+	# if physician not available return
+	if not available_slots:
+		# TODO: return available slots in nearby dates
+		frappe.throw(_("Physician not available on {0}").format(weekday))
+
+	# if physician on leave return
+
+	# if holiday return
+	# if is_holiday(weekday):
+
+	# get appointments on that day for physician
+	appointments = frappe.get_all(
+		"Patient Appointment",
+		filters={"physician": physician, "appointment_date": date},
+		fields=["name", "appointment_time", "duration", "status"])
+
+	return {
+		"available_slots": available_slots,
+		"appointments": appointments,
+		"time_per_appointment": time_per_appointment
+	}
+
+@frappe.whitelist()
 def idr_create_invoice(company, physician, patient, appointment_id, appointment_date):
 	if not appointment_id:
 		return False
@@ -442,3 +499,144 @@ def generate_appointment_description(doc, method):
 		doc.patient_name,
 		".".join([physician[0] for physician in doc.physician.split(" ")]) + "."
 	)
+
+@frappe.whitelist()
+def get_next_available_slot_and_physician():
+	'''
+		for each date between the first and last dates of all schedules today onwards including today:
+			available_docs = []
+			for each soci physician:
+				get_slot_count
+				get_appointment_count
+				if slot_count on date != appointment_count on date:
+					add physician and date to available docs
+		
+	'''
+	soci_department = frappe.db.get_value("IDR Settings", "IDR Settings", "member_department")
+	soci_physicians_and_schedules = frappe.get_all("Physician", filters={"department":soci_department}, fields=["name", "idr_physician_schedule"])
+
+	soci_physicians = [row.name for row in soci_physicians_and_schedules]
+	soci_schedules = [row.idr_physician_schedule for row in soci_physicians_and_schedules]
+
+	all_slot_dates = frappe.get_all("IDR Physician Schedule Time Slot", fields=["slot_date"], \
+		distinct=True, order_by="slot_date", filters={"parent": ("in", soci_schedules), "slot_date": (">=", frappe.utils.getdate())})
+
+	all_slot_dates = [slot.slot_date for slot in all_slot_dates]
+
+	available_physicians = []
+	for date in all_slot_dates:
+		for physician in soci_physicians:
+			timeslot_count = frappe.db.count("IDR Physician Schedule Time Slot", 
+				filters={
+					"slot_date":date,
+					"parent":physician
+				}
+			)
+			appointment_count = frappe.db.count("Patient Appointment",
+				filters={
+					"appointment_date": date,
+					"physician":physician
+				}
+			)
+			if timeslot_count > appointment_count:
+				available_physicians.append(
+					{
+					"physician": physician, 
+					"date": date, 
+					"slot_count":timeslot_count, 
+					"appointment_count": appointment_count
+				})
+
+	if len(available_physicians) > 0:
+		return available_physicians[0]
+
+
+@frappe.whitelist()
+def get_earliest_available_date2(physician):
+	all_slot_dates = frappe.get_all("IDR Physician Schedule Time Slot", fields=["slot_date"], \
+		distinct=True, order_by="slot_date", filters={"parent": physician, "slot_date": (">=", frappe.utils.getdate())})
+
+	all_slot_dates = [slot.slot_date for slot in all_slot_dates]
+
+	for date in all_slot_dates:
+		timeslot_count = frappe.db.count("IDR Physician Schedule Time Slot", 
+			filters={
+				"slot_date":date,
+				"parent":physician
+			}
+		)
+		appointment_count = frappe.db.count("Patient Appointment",
+			filters={
+				"appointment_date": date,
+				"physician":physician
+			}
+		)
+		if timeslot_count > appointment_count:
+			return date
+
+@frappe.whitelist()
+def get_earliest_available_physician_and_date2():
+	soci_department = frappe.db.get_value("IDR Settings", "IDR Settings", "member_department")
+	soci_physicians = frappe.get_all("Physician", filters={"department":soci_department}, fields=["name"])
+
+	earliest_physician_availability_list = [
+		frappe._dict(
+			physician=physician.name, 
+			earliest_available_date=get_earliest_available_date2(physician.name)
+		) for physician in soci_physicians
+	]
+
+	earliest_available_physician_and_date = min(earliest_physician_availability_list, key=lambda x:x.earliest_available_date)
+
+	return earliest_available_physician_and_date
+
+	# slot_counts_by_date_and_doctor = frappe.get_all("IDR Physician Schedule Time Slot", 
+	# 		fields=["parent", "slot_date", "count(name) as slot_count"], 
+	# 		group_by="parent, slot_date",
+	# 		filters={"slot_date": (">=", frappe.utils.getdate())})
+
+	# appointment_counts_by_date_and_doctor = frappe.get_all("Patient Appointment", 
+	# 		fields=["physician", "appointment_date", "count(name) as appointment_count"], 
+	# 		group_by="physician, appointment_date",
+	# 		filters={"appointment_date": (">=", frappe.utils.getdate())})
+
+
+	# for slot_count_row in slot_counts_by_date_and_doctor:
+	# 	appointment_count_rows = [appointment_count_row for appointment_count_row in appointment_counts_by_date_and_doctor 
+	# 	if appointment_count_row.physician == slot_count_row.physician 
+	# 	and appointment_count_row.appointment_date == slot_count_row.slot_date]
+
+
+		
+
+
+	# #for date in all_slot_dates:
+		
+	# schedules_and_slot_counts = frappe.get_all("IDR Physician Schedule Time Slot", 
+	# 	fields=["parent", "slot_date", "count(name) as slot_count"], 
+	# 	group_by="parent, slot_date",
+	# 	filters={"slot_date": (">=", frappe.utils.getdate())})
+
+	# for slot_date in all_slot_dates:
+	# 	frappe.db.count("Patient Appointment", group)
+	# 	#get physician wise appointment count for that date
+	# 	#get physician wise slot count for that date
+	# 	#set slot count to zero
+
+	#schedules_with_next_available_slots = []
+	# pivot_date = frappe.utils.getdate()
+
+	# #Traverse dates to find next closest date
+	# while len(schedules_with_next_available_slots) == 0:
+	# 	closest_next_date = min(all_slot_dates, key=lambda x: abs(x - pivot_date))
+
+	# 	schedules_with_next_available_slots = frappe.get_all("IDR Physician Schedule Time Slot",
+	# 		fields=["parent"], distinct=True, order_by="parent", filters={"slot_date": closest_next_date})
+
+	# 	pivot_date = closest_next_date
+
+	#print(schedules_with_next_available_slots)
+
+	#physicians = frappe.get_all("Physician", filters={"idr_physician_schedule":("in", schedules_with_next_available_slots)})
+
+
