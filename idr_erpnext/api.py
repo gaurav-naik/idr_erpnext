@@ -492,13 +492,13 @@ def create_doctor_invoices(names, filters):
 
 
 def idr_patient_appointment_before_insert(doc, method):
-	generate_appointment_description(doc, method) #For displaying in Calendar View (Enzo Gorlomi-F.V.)
+	generate_appointment_description(doc, method) #For displaying in Calendar View (Gorlomi E- BR) when doc is Riccardo Bono, patient Enzo Gorlomi
 
 def generate_appointment_description(doc, method):
-	doc.idr_appointment_description = "{0}-{1}".format(
-		doc.patient_name,
-		".".join([physician[0] for physician in doc.physician.split(" ")]) + "."
-	)
+	doc.idr_appointment_description = "{0} {1}. {2}{3}".format(frappe.db.get_value("Patient", doc.patient, "idr_patient_last_name"), 
+		frappe.db.get_value("Patient", doc.patient, "idr_patient_first_name")[0].upper(), 
+		frappe.db.get_value("Physician", doc.physician, "last_name")[0].upper(), 
+		frappe.db.get_value("Physician", doc.physician, "first_name")[0].upper())
 
 @frappe.whitelist()
 def get_next_available_slot_and_physician():
