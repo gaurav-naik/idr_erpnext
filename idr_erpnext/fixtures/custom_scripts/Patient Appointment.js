@@ -24,10 +24,13 @@ frappe.ui.form.on("Patient Appointment", {
 		//Check if patient info is filled
 		check_patient_details(frm);
 	},
-	patient: function(frm) {
+	idr_appointment_type: function(frm) {
 		if (!frm.doc.patient) { return 0; }
 		frappe.call({
-			method: "idr_erpnext.api.get_earliest_available_physician_and_date2" //get_earliest_available_physician_and_date"// get_physician_with_earliest_timeslot"
+			method: "idr_erpnext.api.get_earliest_available_physician_and_date2", //get_earliest_available_physician_and_date"// get_physician_with_earliest_timeslot"
+			args: {
+				"procedure": cur_frm.doc.idr_appointment_type
+			}
 		}).done(function(r) {
 			console.log("Physician", r);
 			if (!r.exc) {
@@ -43,7 +46,8 @@ frappe.ui.form.on("Patient Appointment", {
 		frappe.call({
 			method: "idr_erpnext.api.get_earliest_available_date2",
 			args: {
-				"physician": frm.doc.physician
+				"physician": frm.doc.physician,
+				"procedure": cur_frm.doc.idr_appointment_type
 			}
 		}).done(function(r) {
 			if (!r.exc) {
