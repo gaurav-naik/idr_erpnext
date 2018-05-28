@@ -143,7 +143,9 @@ fixtures =  [
 		"Sales Invoice-diagnosi_section",
 		"Patient Appointment-idr_servizio",
 		"Patient Appointment-idr_appointment_description",
-		"Physician-idr_physician_schedule"
+		"Physician-idr_physician_schedule",
+		"Item-idr_procedure_room",
+		"Patient Appointment-idr_procedure_room"
 	]]]},
 	{"dt":"Property Setter", "filters": [["name", "in", [
 		"Patient-sex-default",
@@ -163,6 +165,7 @@ fixtures =  [
 		"Patient Appointment-read_only_onload",
 		"Customer-basic_info-hidden",
 		"Customer-currency_and_price_list-hidden"
+		"Physician-physician_schedule-hidden"
 	]]]},
 	{"dt":"Print Format", "filters": [["name", "in", [
 		"Consent Letter", 
