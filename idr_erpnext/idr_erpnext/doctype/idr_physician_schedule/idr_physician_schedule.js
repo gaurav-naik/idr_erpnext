@@ -96,9 +96,14 @@ frappe.ui.form.on('IDR Physician Schedule', {
 			d.show();
 		});
 
-		frm.add_custom_button(__("Clear Slots"), function(){
-			frm.clear_table("time_slots");
-			refresh_field("time_slots");
+		frm.add_custom_button(__("Delete all Slots"), function(){
+			frappe.confirm(__('Delete all slots?'),
+			    function(){
+			        frm.clear_table("time_slots");
+					refresh_field("time_slots");
+			    },
+			    function(){}
+			);
 		});
 	}
 });
