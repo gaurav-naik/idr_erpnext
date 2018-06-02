@@ -893,7 +893,7 @@
   "in_global_search": 0, 
   "in_list_view": 0, 
   "in_standard_filter": 0, 
-  "insert_after": "physician_schedule", 
+  "insert_after": "idr_supplier", 
   "label": "IDR Physician Schedule", 
   "modified": "2018-05-20 15:25:20.776858", 
   "name": "Physician-idr_physician_schedule", 

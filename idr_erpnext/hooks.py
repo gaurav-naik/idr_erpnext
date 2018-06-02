@@ -86,7 +86,8 @@ doc_events = {
 		"on_update": "idr_erpnext.api.patient_on_update"
 	},
 	"Physician": {
-		"after_insert": "idr_erpnext.api.idr_physician_after_insert"
+		"after_insert": "idr_erpnext.api.idr_physician_after_insert",
+		"on_update": "idr_erpnext.api.idr_physician_on_update"
 	},
 	"Patient Appointment": {
 		"before_insert": "idr_erpnext.api.idr_patient_appointment_before_insert"
@@ -164,7 +165,8 @@ fixtures =  [
 		"Sales Invoice-read_only_onload",
 		"Patient Appointment-read_only_onload",
 		"Customer-basic_info-hidden",
-		"Customer-currency_and_price_list-hidden"
+		"Customer-currency_and_price_list-hidden",
+		"Physician-appointments-hidden"
 	]]]},
 	{"dt":"Print Format", "filters": [["name", "in", [
 		"Consent Letter", 

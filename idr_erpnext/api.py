@@ -66,7 +66,6 @@ def idr_physician_after_insert(doc, method):
 	doc.db_set("idr_supplier", supplier.name)
 	frappe.db.commit()
 	#TODO: create tax rules
-	
 
 def patient_on_update(doc, method):
 	if not doc.customer:
@@ -660,3 +659,12 @@ def get_earliest_available_physician_and_date2(procedure):
 	#physicians = frappe.get_all("Physician", filters={"idr_physician_schedule":("in", schedules_with_next_available_slots)})
 
 
+def idr_physician_on_update(doc, method):
+	if doc.idr_physician_schedule and not doc.physician_schedule:
+		dummy_schedule = frappe.new_doc("Physician Schedule")
+		dummy_schedule.schedule_name = doc.idr_physician_schedule
+		dummy_schedule.save()
+
+		doc.db_set("physician_schedule", dummy_schedule.name)
+		doc.db_set("time_per_appointment", 20)
+		frappe.db.commit()
