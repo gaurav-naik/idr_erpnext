@@ -574,22 +574,22 @@ def get_earliest_available_date2(physician, procedure):
 			fields=["appointment_date AS date", "appointment_time as time"]
 		)
 		if len(timeslots) > len(appointments):
-			#Get all available slots
-			#Get confirmed appointments for other doctors during these slots with the same procedure 
-			#If length is 0, it is implied that both doctor and room are available on this slot. Return the date.
-			available_slots = [timeslot for timeslot in timeslots if timeslot not in appointments]
+			# #Get all available slots
+			# #Get confirmed appointments for other doctors during these slots with the same procedure 
+			# #If length is 0, it is implied that both doctor and room are available on this slot. Return the date.
+			# available_slots = [timeslot for timeslot in timeslots if timeslot not in appointments]
 
-			available_slot_from_times = ["'{0}'".format(slot.time) for slot in available_slots]
+			# available_slot_from_times = ["'{0}'".format(slot.time) for slot in available_slots]
 
-			appointments_for_procedures = frappe.get_all("Patient Appointment", 
-				filters={"appointment_date":date, 
-				"appointment_time": ("in", available_slot_from_times), 
-				"idr_appointment_type": procedure, 
-				"idr_procedure_room": ("!=", "")
-			})
+			# appointments_for_procedures = frappe.get_all("Patient Appointment", 
+			# 	filters={"appointment_date":date, 
+			# 	"appointment_time": ("in", available_slot_from_times), 
+			# 	"idr_appointment_type": procedure, 
+			# 	"idr_procedure_room": ("!=", "")
+			# })
 
-			if len(appointments_for_procedures) == 0:
-				return date
+			# if len(appointments_for_procedures) == 0:
+			return date
 
 
 @frappe.whitelist()
