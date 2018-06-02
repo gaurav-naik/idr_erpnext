@@ -253,5 +253,39 @@
   "property": "read_only_onload", 
   "property_type": "Check", 
   "value": null
+ }, 
+ {
+  "_assign": null, 
+  "_comments": null, 
+  "_liked_by": null, 
+  "_user_tags": null, 
+  "default_value": null, 
+  "doc_type": "Customer", 
+  "docstatus": 0, 
+  "doctype": "Property Setter", 
+  "doctype_or_field": "DocField", 
+  "field_name": "basic_info", 
+  "modified": "2018-06-02 11:49:04.930195", 
+  "name": "Customer-basic_info-hidden", 
+  "property": "hidden", 
+  "property_type": "Check", 
+  "value": "1"
+ }, 
+ {
+  "_assign": null, 
+  "_comments": null, 
+  "_liked_by": null, 
+  "_user_tags": null, 
+  "default_value": null, 
+  "doc_type": "Customer", 
+  "docstatus": 0, 
+  "doctype": "Property Setter", 
+  "doctype_or_field": "DocField", 
+  "field_name": "currency_and_price_list", 
+  "modified": "2018-06-02 11:49:04.963108", 
+  "name": "Customer-currency_and_price_list-hidden", 
+  "property": "hidden", 
+  "property_type": "Check", 
+  "value": "1"
  }
 ]
