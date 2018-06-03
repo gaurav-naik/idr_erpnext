@@ -17,7 +17,6 @@ frappe.ui.form.on("Customer", {
 				}
 			}).done(function(r) {
 				frm.set_value("idr_customer_tax_id", r.message);
-				frm.refresh();
 			}).error(function(err) {
 				frappe.show_alert(__("Unable to set codice fiscale"));
 			});
@@ -29,7 +28,6 @@ frappe.ui.form.on("Customer", {
 					codice_fiscale: frm.doc.idr_customer_tax_id, 
 				}
 			}).done(function(r) {
-				frm.refresh();
 				frappe.msgprint(r.message);
 			}).error(function(err) {
 				frm.show_alert(__("Unable to set codice fiscale"));
