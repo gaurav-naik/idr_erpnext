@@ -166,7 +166,9 @@ fixtures =  [
 		"Patient Appointment-read_only_onload",
 		"Customer-basic_info-hidden",
 		"Customer-currency_and_price_list-hidden",
-		"Physician-appointments-hidden"
+		"Physician-appointments-hidden",
+		"Patient Appointment-check_availability-hidden",
+		"Address-pincode-reqd"
 	]]]},
 	{"dt":"Print Format", "filters": [["name", "in", [
 		"Consent Letter", 
