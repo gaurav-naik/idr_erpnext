@@ -426,84 +426,84 @@ def idr_create_invoice(company, physician, patient, appointment_id, appointment_
 
 	return sales_invoice.name
 
-@frappe.whitelist()
-def create_doctor_invoices(names, filters):
-	filters = json.loads(filters)
-	names = json.loads(names)
+# @frappe.whitelist()
+# def create_doctor_invoices(names, filters):
+# 	filters = json.loads(filters)
+# 	names = json.loads(names)
 
-	if len(filters) == 0:
-		frappe.throw(_("Please select a doctor and date"))
+# 	if len(filters) == 0:
+# 		frappe.throw(_("Please select a doctor and date"))
 
-	filter_dict = frappe._dict()
-	for filter_criterion in filters:
-		filter_dict.update({filter_criterion[1]:filter_criterion[3]})
+# 	filter_dict = frappe._dict()
+# 	for filter_criterion in filters:
+# 		filter_dict.update({filter_criterion[1]:filter_criterion[3]})
 
-	#Select physician from appointments. Filters is unreliable
-	physicians_from_selected_appointments = frappe.get_all("Patient Appointment", 
-		filters={"idr_patient_appointment": ('in', names)}, 
-		fields=["physician"])
-	physicians_from_selected_appointments = [appointment.physician for appointment in physicians_from_selected_appointments]
-	distinct_physicians = list(set(physicians_from_selected_appointments))
+# 	#Select physician from appointments. Filters is unreliable
+# 	physicians_from_selected_appointments = frappe.get_all("Patient Appointment", 
+# 		filters={"name": ('in', names)}, 
+# 		fields=["physician"])
+# 	physicians_from_selected_appointments = [appointment.physician for appointment in physicians_from_selected_appointments]
+# 	distinct_physicians = list(set(physicians_from_selected_appointments))
 
-	if len(distinct_physicians) != 1:
-		frappe.throw(_("You may create invoices for only one doctor at a time."))
+# 	if len(distinct_physicians) != 1:
+# 		frappe.throw(_("You may create invoices for only one doctor at a time."))
 
-	physician_supplier = frappe.db.get_value("Physician", distinct_physicians[0], "idr_supplier")
-	#If submitted purchase invoice exists, then alert.
-	# existing_invoice = frappe.db.get_value("Purchase Invoice", {"supplier": physician_supplier, "posting_date": filter_dict.get("date")})
-	# if existing_invoice:
-	# 	frappe.throw(_("Invoice <a href='desk#Form/Purchase%20Invoice/{0}'>{0}</a> already exists for this doctor and date.".format(existing_invoice)))
+# 	physician_supplier = frappe.db.get_value("Physician", distinct_physicians[0], "idr_supplier")
+# 	#If submitted purchase invoice exists, then alert.
+# 	# existing_invoice = frappe.db.get_value("Purchase Invoice", {"supplier": physician_supplier, "posting_date": filter_dict.get("date")})
+# 	# if existing_invoice:
+# 	# 	frappe.throw(_("Invoice <a href='desk#Form/Purchase%20Invoice/{0}'>{0}</a> already exists for this doctor and date.".format(existing_invoice)))
 
-	#If appointments already exist in other invoice, throw an error
-	appointments_in_other_invoices = frappe.get_all("Purchase Invoice Item", 
-		filters={"idr_patient_appointment": ('in', names)}, 
-		fields=["parent", "idr_patient_appointment"])
+# 	#If appointments already exist in other invoice, throw an error
+# 	appointments_in_other_invoices = frappe.get_all("Purchase Invoice Item", 
+# 		filters={"idr_patient_appointment": ('in', names)}, 
+# 		fields=["parent", "idr_patient_appointment"])
 
-	if len(appointments_in_other_invoices) > 0:
-		appointments_in_other_invoices_list = [a.idr_patient_appointment for a in appointments_in_other_invoices]
-		other_invoices = [a.parent for a in appointments_in_other_invoices]
-		frappe.throw(_("Appointment(s) {0} already added to invoice(s) {1}.").format(", ".join(appointments_in_other_invoices_list), ", ".join(other_invoices)))
+# 	if len(appointments_in_other_invoices) > 0:
+# 		appointments_in_other_invoices_list = [a.idr_patient_appointment for a in appointments_in_other_invoices]
+# 		other_invoices = [a.parent for a in appointments_in_other_invoices]
+# 		frappe.throw(_("Appointment(s) {0} already added to invoice(s) {1}.").format(", ".join(appointments_in_other_invoices_list), ", ".join(other_invoices)))
 
-	physician_supplier_type = frappe.db.get_value("Supplier", physician_supplier, "supplier_type")
+# 	physician_supplier_type = frappe.db.get_value("Supplier", physician_supplier, "supplier_type")
 
-	purchase_invoice = frappe.new_doc("Purchase Invoice")
-	purchase_invoice.supplier = physician_supplier
+# 	purchase_invoice = frappe.new_doc("Purchase Invoice")
+# 	purchase_invoice.supplier = physician_supplier
 
-	if physician_supplier_type == "SOCI":
-		purchase_invoice.buying_price_list = "SOCI"
-	elif physician_supplier_type == "NON SOCI":
-		purchase_invoice.buying_price_list = "NON SOCI"
-	else:
-		purchase_invoice.buying_price_list = "Standard Buying"
+# 	if physician_supplier_type == "SOCI":
+# 		purchase_invoice.buying_price_list = "SOCI"
+# 	elif physician_supplier_type == "NON SOCI":
+# 		purchase_invoice.buying_price_list = "NON SOCI"
+# 	else:
+# 		purchase_invoice.buying_price_list = "Standard Buying"
 
-	for appointment_name in names:
-		appointment = frappe.get_doc("Patient Appointment", appointment_name)
+# 	for appointment_name in names:
+# 		appointment = frappe.get_doc("Patient Appointment", appointment_name)
 
-		if not appointment.sales_invoice:
-			frappe.throw(_("Appointment {0} does not have a linked Sales Invoice").format(appointment_name))
+# 		if not appointment.sales_invoice:
+# 			frappe.throw(_("Appointment {0} does not have a linked Sales Invoice").format(appointment_name))
 
-		rate = frappe.db.get_value("Item Price", 
-				filters={"price_list": purchase_invoice.buying_price_list, "item_code": appointment.idr_appointment_type}, 
-				fieldname="price_list_rate")
+# 		rate = frappe.db.get_value("Item Price", 
+# 				filters={"price_list": purchase_invoice.buying_price_list, "item_code": appointment.idr_appointment_type}, 
+# 				fieldname="price_list_rate")
 
-		purchase_invoice.append("items", {
-			"item_code": appointment.idr_appointment_type,
-			"qty": 1,
-			"rate": rate,
-			"amount": rate,
-			"conversion_factor":1,
-			"idr_patient_appointment": appointment.name,
-			"idr_patient_appointment_invoice": appointment.sales_invoice
-		})
+# 		purchase_invoice.append("items", {
+# 			"item_code": appointment.idr_appointment_type,
+# 			"qty": 1,
+# 			"rate": rate,
+# 			"amount": rate,
+# 			"conversion_factor":1,
+# 			"idr_patient_appointment": appointment.name,
+# 			"idr_patient_appointment_invoice": appointment.sales_invoice
+# 		})
 
-	taxes = get_default_taxes_and_charges("Purchase Taxes and Charges Template", company=frappe.defaults.get_defaults().get("company"))
+# 	taxes = get_default_taxes_and_charges("Purchase Taxes and Charges Template", company=frappe.defaults.get_defaults().get("company"))
 	
-	if taxes.get('taxes'):
-		purchase_invoice.update(taxes)
+# 	if taxes.get('taxes'):
+# 		purchase_invoice.update(taxes)
 
-	purchase_invoice.save()
+# 	purchase_invoice.save()
 
-	frappe.msgprint(_("Doctor Invoice <a href='desk#Form/Purchase%20Invoice/{0}'>{0}</a> created.".format(purchase_invoice.name)))
+# 	frappe.msgprint(_("Doctor Invoice <a href='desk#Form/Purchase%20Invoice/{0}'>{0}</a> created.".format(purchase_invoice.name)))
 
 
 def idr_patient_appointment_before_insert(doc, method):
@@ -716,3 +716,74 @@ def idr_physician_on_update(doc, method):
 		doc.db_set("time_per_appointment", 20)
 		frappe.db.commit()
 
+
+@frappe.whitelist()
+def create_doctor_invoices(filters):
+	filters = json.loads(filters)
+
+	for x in xrange(1,10):
+		print("FILTERS", filters)
+
+	if len(filters) == 0:
+		frappe.throw(_("Please select a doctor and date"))
+
+	filter_dict = frappe._dict(filters)
+	# for filter_criterion in filters:
+	# 	filter_dict.update({filter_criterion[1]:filter_criterion[3]})
+	
+	appointments = frappe.get_all("Patient Appointment", 
+		filters={"appointment_date": filter_dict.date, "physician": filter_dict.physician, "sales_invoice":("!=", "")}, 
+		fields=["name", "idr_appointment_type", "sales_invoice"]
+	);
+
+	if len(appointments) == 0:
+		frappe.throw(_("There are appointments without linked invoices for this date and doctor."))
+
+	physician_supplier = frappe.db.get_value("Physician", filter_dict.physician, "idr_supplier")
+	physician_supplier_type = frappe.db.get_value("Supplier", physician_supplier, "supplier_type")
+
+	#If appointments already exist in other invoice, throw an error
+	appointment_names = [appointment.name for appointment in appointments]
+	appointments_in_other_invoices = frappe.get_all("Purchase Invoice Item", 
+		filters={"idr_patient_appointment": ('in', appointment_names)}, 
+		fields=["parent", "idr_patient_appointment"])
+
+	if len(appointments_in_other_invoices) > 0:
+		appointments_in_other_invoices_list = [a.idr_patient_appointment for a in appointments_in_other_invoices]
+		other_invoices = [a.parent for a in appointments_in_other_invoices]
+		frappe.throw(_("Appointment(s) {0} already added to invoice(s) {1}.").format(", ".join(appointments_in_other_invoices_list), ", ".join(other_invoices)))
+
+	#Make Purchase Invoice for doctor and date.
+	purchase_invoice = frappe.new_doc("Purchase Invoice")
+	purchase_invoice.supplier = physician_supplier
+	purchase_invoice.buying_price_list = "SOCI" if physician_supplier_type == "SOCI" else "NON SOCI"
+	purchase_invoice.set_posting_time = 1
+	purchase_invoice.posting_date = filter_dict.date
+
+	for appointment in appointments:
+		#appointment = frappe.get_doc("Patient Appointment", appointment_name)
+		rate = frappe.db.get_value("Item Price", 
+				filters={"price_list": purchase_invoice.buying_price_list, "item_code": appointment.idr_appointment_type}, 
+				fieldname="price_list_rate")
+
+		purchase_invoice.append("items", {
+			"item_code": appointment.idr_appointment_type,
+			"qty": 1,
+			"rate": rate,
+			"amount": rate,
+			"conversion_factor":1,
+			"idr_patient_appointment": appointment.name,
+			"idr_patient_appointment_invoice": appointment.sales_invoice
+		})
+
+	taxes = get_default_taxes_and_charges("Purchase Taxes and Charges Template", company=frappe.defaults.get_defaults().get("company"))
+	
+	if taxes.get('taxes'):
+		purchase_invoice.update(taxes)
+
+	purchase_invoice.save()
+	purchase_invoice.db_set("set_posting_time", 0)
+
+	frappe.msgprint(
+		_("Doctor Invoice <a href='desk#Form/Purchase%20Invoice/{0}'>{0}</a> created.".format(purchase_invoice.name))
+	)
