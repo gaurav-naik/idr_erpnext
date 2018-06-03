@@ -1,4 +1,5 @@
 import frappe
+from frappe import _
 import json
 from frappe.contacts.doctype.address.address import get_address_display, get_default_address
 from frappe.contacts.doctype.contact.contact import get_default_contact
@@ -437,9 +438,17 @@ def create_doctor_invoices(names, filters):
 	for filter_criterion in filters:
 		filter_dict.update({filter_criterion[1]:filter_criterion[3]})
 
-	# #Please add a supplier against a Physician if it doesn't already exist.
-	physician_supplier = frappe.db.get_value("Physician", filter_dict.get("physician"), "idr_supplier")
+	#Select physician from appointments. Filters is unreliable
+	physicians_from_selected_appointments = frappe.get_all("Patient Appointment", 
+		filters={"idr_patient_appointment": ('in', names)}, 
+		fields=["physician"])
+	physicians_from_selected_appointments = [appointment.physician for appointment in physicians_from_selected_appointments]
+	distinct_physicians = list(set(physicians_from_selected_appointments))
 
+	if len(distinct_physicians) != 1:
+		frappe.throw(_("You may create invoices for only one doctor at a time."))
+
+	physician_supplier = frappe.db.get_value("Physician", distinct_physicians[0], "idr_supplier")
 	#If submitted purchase invoice exists, then alert.
 	# existing_invoice = frappe.db.get_value("Purchase Invoice", {"supplier": physician_supplier, "posting_date": filter_dict.get("date")})
 	# if existing_invoice:
