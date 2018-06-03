@@ -4,6 +4,12 @@ frappe.ui.form.on("Patient Appointment", {
 		check_patient_details(frm);
 	},
 	refresh: function(frm) {
+		if (frm.doc.__islocal) {
+			frm.add_custom_button(__("Check Availability"), function() {
+				check_patient_availability(frm);
+			});
+		}
+
 		if (frm.doc.sales_invoice) {
 			frm.add_custom_button(__("Delete Linked Invoice"), function() {
 				frappe.call({
@@ -29,7 +35,7 @@ frappe.ui.form.on("Patient Appointment", {
 		frappe.call({
 			method: "idr_erpnext.api.get_earliest_available_physician_and_date2", //get_earliest_available_physician_and_date"// get_physician_with_earliest_timeslot"
 			args: {
-				"procedure": cur_frm.doc.idr_appointment_type
+				"procedure_room": frm.doc.idr_procedure_room
 			}
 		}).done(function(r) {
 			console.log("Physician", r);
@@ -47,7 +53,7 @@ frappe.ui.form.on("Patient Appointment", {
 			method: "idr_erpnext.api.get_earliest_available_date2",
 			args: {
 				"physician": frm.doc.physician,
-				"procedure": cur_frm.doc.idr_appointment_type
+				"procedure_room": frm.doc.idr_procedure_room
 			}
 		}).done(function(r) {
 			if (!r.exc) {
@@ -65,7 +71,7 @@ frappe.ui.form.on("Patient Appointment", {
 });
 
 frappe.ui.keys.on("alt+c", function(e) {
-	frappe.click_button("Check availability");
+	frappe.click_button("Check Availability");
 });
 
 function check_patient_details(frm) {
@@ -98,5 +104,108 @@ function check_patient_details(frm) {
 		}).error(function(err) {
 			frappe.show_alert(__("Could not check patient details"));
 		});
+	}
+}
+
+//CLONE Check patient availability
+function check_patient_availability(frm) {
+	var { physician, appointment_date } = frm.doc;
+	if(!(physician && appointment_date)) {
+		frappe.throw(__("Please select Physician and Date"));
+	}
+
+	// show booking modal
+	frm.call({
+		method: 'idr_erpnext.api.idr_get_availability_data1',
+		args: {
+			physician: physician,
+			date: appointment_date
+		},
+		callback: (r) => {
+			// console.log(r);
+			var data = r.message;
+			if(data.available_slots.length > 0) {
+				show_availability(data);
+			} else {
+				show_empty_state();
+			}
+		}
+	});
+
+	function show_empty_state() {
+		frappe.msgprint({
+			title: __('Not Available'),
+			message: __("Physician {0} not available on {1}", [physician.bold(), appointment_date.bold()]),
+			indicator: 'red'
+		});
+	}
+
+	function show_availability(data) {
+		console.log("slots", data.available_slots);
+		console.log("appointments", data.appointments);
+		console.log("room_appointments", data.appointments_requiring_rooms);
+
+		var d = new frappe.ui.Dialog({
+			title: __("Available slots"),
+			fields: [{ fieldtype: 'HTML', fieldname: 'available_slots'}],
+			primary_action_label: __("Book"),
+			primary_action: function() {
+				// book slot
+				frm.set_value('appointment_time', selected_slot);
+				frm.set_value('duration', data.time_per_appointment);
+				d.hide();
+				frm.save();
+			}
+		});
+		var $wrapper = d.fields_dict.available_slots.$wrapper;
+		var selected_slot = null;
+
+		// disable dialog action initially
+		d.get_primary_btn().attr('disabled', true);
+
+		// make buttons for each slot
+		var slot_html = data.available_slots.map(slot => {
+			return `<button class="btn btn-default"
+				data-name=${slot.from_time} data-room=${slot.idr_procedure_room}
+				style="margin: 0 10px 10px 0; width: 72px">
+				${slot.from_time.substring(0, slot.from_time.length - 3)}
+			</button>`;
+		}).join("");
+
+		$wrapper
+			.css('margin-bottom', 0)
+			.addClass('text-center')
+			.html(slot_html);
+
+		// disable buttons for which appointments are booked
+		data.appointments.map(slot => {
+			console.log(slot)
+			if(slot.status == "Scheduled" || slot.status == "Open" || slot.status == "Closed"){
+				$wrapper
+					.find(`button[data-name="${slot.appointment_time}"]`)
+					.attr('disabled', true);
+			}
+		});
+
+		data.appointments_requiring_rooms.map(slot => {
+			if(slot.idr_procedure_room == frm.doc.idr_procedure_room){
+				$wrapper
+					.find(`button[data-name="${slot.appointment_time}"]`)
+					.attr('disabled', true);
+			}
+		});
+
+		// blue button when clicked
+		$wrapper.on('click', 'button', function() {
+			var $btn = $(this);
+			$wrapper.find('button').removeClass('btn-primary');
+			$btn.addClass('btn-primary');
+			selected_slot = $btn.attr('data-name');
+
+			// enable dialog action
+			d.get_primary_btn().attr('disabled', null);
+		});
+
+		d.show();
 	}
 }
