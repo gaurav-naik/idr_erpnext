@@ -604,7 +604,7 @@ def get_earliest_available_date2(physician, procedure_room=None):
 				available_slots = [timeslot for timeslot in timeslots if timeslot not in appointments]
 				available_slot_from_times = ",".join(["'{0}'".format(slot.time) for slot in available_slots])
 
-				print("available_slot_from_times", available_slot_from_times)
+				print("available_slot_from_times on ", date, available_slot_from_times)
 
 				# appointments_for_room = frappe.get_all("Patient Appointment", 
 				# 	filters={"appointment_date":date, 
@@ -630,7 +630,8 @@ def get_earliest_available_date2(physician, procedure_room=None):
 
 				print ("appointments_for_room", appointments_for_room)
 
-				if len(appointments_for_room) == 0:
+				#If the number of appointments needing a room is less than available slots, return date.
+				if len(available_slot_from_times) > len(appointments_for_room):
 					return date
 
 
