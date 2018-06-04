@@ -761,20 +761,29 @@ def create_doctor_invoices(filters):
 	purchase_invoice.posting_date = filter_dict.date
 
 	for appointment in appointments:
-		#appointment = frappe.get_doc("Patient Appointment", appointment_name)
-		rate = frappe.db.get_value("Item Price", 
-				filters={"price_list": purchase_invoice.buying_price_list, "item_code": appointment.idr_appointment_type}, 
+		#appointment = frappe.get_doc("Patient Appointment", appointment.name)
+		invoice_items = frappe.get_all("Sales Invoice Item", filters={"parent":appointment.sales_invoice}, fields=["*"])
+
+		for invoice_item in invoice_items:
+			rate = frappe.db.get_value("Item Price", 
+				filters={"price_list": purchase_invoice.buying_price_list, "item_code": invoice_item.item_code}, 
+				fieldname="price_list_rate")
+			
+			#If rate not in soci or non soci.
+			if not rate:
+				rate = frappe.db.get_value("Item Price", 
+				filters={"price_list": _("Standard Selling"), "item_code": invoice_item.item_code}, 
 				fieldname="price_list_rate")
 
-		purchase_invoice.append("items", {
-			"item_code": appointment.idr_appointment_type,
-			"qty": 1,
-			"rate": rate,
-			"amount": rate,
-			"conversion_factor":1,
-			"idr_patient_appointment": appointment.name,
-			"idr_patient_appointment_invoice": appointment.sales_invoice
-		})
+			purchase_invoice.append("items", {
+				"item_code": invoice_item.item_code,
+				"qty": 1,
+				"rate": rate,
+				"amount": rate,
+				"conversion_factor":1,
+				"idr_patient_appointment": appointment.name,
+				"idr_patient_appointment_invoice": appointment.sales_invoice
+			})
 
 	taxes = get_default_taxes_and_charges("Purchase Taxes and Charges Template", company=frappe.defaults.get_defaults().get("company"))
 	
