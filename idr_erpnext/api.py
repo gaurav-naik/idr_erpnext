@@ -772,7 +772,7 @@ def create_doctor_invoices(filters):
 			#If rate not in soci or non soci.
 			if not rate:
 				rate = frappe.db.get_value("Item Price", 
-				filters={"price_list": _("Standard Selling"), "item_code": invoice_item.item_code}, 
+				filters={"price_list": "CLIENTI", "item_code": invoice_item.item_code}, 
 				fieldname="price_list_rate")
 
 			purchase_invoice.append("items", {
