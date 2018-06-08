@@ -183,7 +183,8 @@ function check_patient_availability(frm) {
 			if(slot.status == "Scheduled" || slot.status == "Open" || slot.status == "Closed"){
 				$wrapper
 					.find(`button[data-name="${slot.appointment_time}"]`)
-					.attr('disabled', true);
+					.attr('disabled', true)
+					.addClass('btn-danger');
 			}
 		});
 
@@ -191,7 +192,8 @@ function check_patient_availability(frm) {
 			if(slot.idr_procedure_room == frm.doc.idr_procedure_room){
 				$wrapper
 					.find(`button[data-name="${slot.appointment_time}"]`)
-					.attr('disabled', true);
+					.attr('disabled', true)
+					.addClass('btn-danger');
 			}
 		});
 
