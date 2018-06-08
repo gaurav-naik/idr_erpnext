@@ -338,5 +338,22 @@
   "property": "reqd", 
   "property_type": "Check", 
   "value": "1"
+ }, 
+ {
+  "_assign": null, 
+  "_comments": null, 
+  "_liked_by": null, 
+  "_user_tags": null, 
+  "default_value": null, 
+  "doc_type": "Purchase Invoice", 
+  "docstatus": 0, 
+  "doctype": "Property Setter", 
+  "doctype_or_field": "DocType", 
+  "field_name": null, 
+  "modified": "2018-06-04 08:59:09.649883", 
+  "name": "Purchase Invoice-default_print_format", 
+  "property": "default_print_format", 
+  "property_type": "Data", 
+  "value": "IDR Fattura Medici"
  }
 ]
