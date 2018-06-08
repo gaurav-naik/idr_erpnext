@@ -6,20 +6,24 @@ frappe.ui.form.on("Customer", {
 		);
 
 		$(".generate-cf").on("click", function() {
-			frappe.call({
-				method: "idr_erpnext.api.generate_codice_fiscale",
-				args: {
-					first_name: frm.doc.idr_customer_first_name, 
-					last_name: frm.doc.idr_customer_last_name, 
-					date_of_birth: frm.doc.idr_customer_date_of_birth, 
-					gender: frm.doc.idr_customer_gender, 
-					place_of_birth: frm.doc.idr_customer_place_of_birth
-				}
-			}).done(function(r) {
-				frm.set_value("idr_customer_tax_id", r.message);
-			}).error(function(err) {
-				frappe.show_alert(__("Unable to set codice fiscale"));
-			});
+			if (frm.is_dirty()) {
+				frappe.msgprint(__("Please save the form"));
+			} else {
+				frappe.call({
+					method: "idr_erpnext.api.generate_codice_fiscale",
+					args: {
+						first_name: frm.doc.idr_customer_first_name, 
+						last_name: frm.doc.idr_customer_last_name, 
+						date_of_birth: frm.doc.idr_customer_date_of_birth, 
+						gender: frm.doc.idr_customer_gender, 
+						place_of_birth: frm.doc.idr_customer_place_of_birth
+					}
+				}).done(function(r) {
+					frm.set_value("idr_customer_tax_id", r.message);
+				}).error(function(err) {
+					frappe.show_alert(__("Unable to set codice fiscale"));
+				});
+			}
 		});
 		$(".validate-cf").on("click", function() {
 			frappe.call({
@@ -41,14 +45,13 @@ frappe.ui.form.on("Customer", {
 		frm.set_value("tax_id", frm.doc.idr_customer_tax_id);
 	},
 	idr_customer_first_name: function(frm) {
-		make_customer_name(frm.doc.idr_customer_first_name, frm.doc.idr_customer_last_name);
+		frm.set_value(make_customer_name(frm.doc.idr_customer_first_name, frm.doc.idr_customer_last_name));
 	},
 	idr_customer_last_name: function(frm) {
-		make_customer_name(frm.doc.idr_customer_first_name, frm.doc.idr_customer_last_name);
+		frm.set_value(make_customer_name(frm.doc.idr_customer_first_name, frm.doc.idr_customer_last_name));
 	}
 });
 
 function make_customer_name(first_name, last_name) {
-	var full_name = first_name + " " + last_name;
-	frm.set_value("customer_name", full_name);
+	return first_name + " " + last_name;
 }
