@@ -168,12 +168,14 @@ fixtures =  [
 		"Customer-currency_and_price_list-hidden",
 		"Physician-appointments-hidden",
 		"Patient Appointment-check_availability-hidden",
-		"Address-pincode-reqd"
+		"Address-pincode-reqd",
+		"Purchase Invoice-default_print_format"
 	]]]},
 	{"dt":"Print Format", "filters": [["name", "in", [
 		"Consent Letter", 
 		"Medical Certificate",
-		"IDR Fattura Paziente"
+		"IDR Fattura Paziente",
+		"IDR Fattura Medici"
 	]]]},
 	{"dt":"Letter Head", "filters": [["name", "in", [
 		"IDR"
