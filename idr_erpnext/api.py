@@ -403,6 +403,7 @@ def idr_create_invoice(company, physician, patient, appointment_id, appointment_
 		"income_account": get_income_account(physician, company),
 		"rate": rate, 
 		"amount": rate
+		"item_group": frappe.db.get_value("Item", {"item_code":appointment.idr_appointment_type}, "item_group")
 	})
 	
 	taxes = get_default_taxes_and_charges("Sales Taxes and Charges Template", company=company)
