@@ -27,31 +27,25 @@ def get_columns():
 		{
 			"fieldname": "payment_amount",
 			"label": _("Payment Amount"),
-			"fieldtype": "Data",
-			"width": 120
-		},
-		{
-			"fieldname": "expenses",
-			"label": _("Expenses"),
-			"fieldtype": "Data",
+			"fieldtype": "Currency",
 			"width": 120
 		},
 		{
 			"fieldname": "room_charge_percentage",
-			"label": _("% Studio"),
+			"label": _("% Room"),
 			"fieldtype": "Data",
 			"width": 120
 		},
 		{
 			"fieldname": "room_charge_amount",
-			"label": _("Importo Studio"),
-			"fieldtype": "Data",
+			"label": _("Room Amount"),
+			"fieldtype": "Currency",
 			"width": 120
 		},
 		{
 			"fieldname": "doctor_amount",
-			"label": _("Importo Medico + Spese"),
-			"fieldtype": "Data",
+			"label": _("Doctor Amount + Expenses"),
+			"fieldtype": "Currency",
 			"width": 200
 		},
 	]
@@ -64,8 +58,6 @@ def get_data(filters):
 
 		date, patient, sum of invoice rates by CLIENTI, sum of invoice rates by SOCI
 	'''
-	#print(filters)
-
 	data = []
 
 	appointments = frappe.get_all("Patient Appointment", 
@@ -90,12 +82,12 @@ def get_data(filters):
 		procedure_type_fee_rates = []
 		for invoice_item in invoice_items:
 			total_selling_rate += invoice_item.rate or 0
-			total_physician_rate += frappe.db.get_value("Item Price", filters={"price_list": physician_price_list, "item_code":invoice_item.item_code}, fieldname="price_list_rate") or 0
+			total_physician_rate += frappe.db.get_value("Item Price", 
+				filters={"price_list": physician_price_list, "item_code":invoice_item.item_code}, fieldname="price_list_rate") or 0
 			
 			item_group = invoice_item.item_group or frappe.db.get_value("Item", invoice_item.item_code, "item_group")
 
 			procedure_type_fee_rates.append(str(get_idr_fee_rate(procedure_type=item_group, physician_category=physician_price_list)))
-			#print(item_group, physician_price_list, procedure_type_fee_rates)
 
 		row["payment_amount"] = total_selling_rate
 		row["room_charge_percentage"] = " + ".join(procedure_type_fee_rates)
@@ -103,5 +95,28 @@ def get_data(filters):
 		row["doctor_amount"] = total_physician_rate
 
 		data.append(row)
+
+	#grand totals
+
+	grand_total_doctor_amount = sum([data_row.get("doctor_amount") for data_row in data])
+	ritenuta_amount = grand_total_doctor_amount * 0.2 #@20%
+
+	data.append({
+		"payment_amount": sum([data_row.get("payment_amount") for data_row in data]),
+		"room_charge_amount": sum([data_row.get("room_charge_amount") for data_row in data]),
+		"doctor_amount": grand_total_doctor_amount
+	})
+
+	#ritenuto
+	data.append({
+		"room_charge_percentage": "Ritenuta 20%",
+		"doctor_amount": ritenuta_amount
+	})
+
+	#total
+	data.append({
+		"room_charge_percentage": "<b>" + _("Total") + "</b>",
+		"doctor_amount": grand_total_doctor_amount - ritenuta_amount
+	})	
 
 	return data
