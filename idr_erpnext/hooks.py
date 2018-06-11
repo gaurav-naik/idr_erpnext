@@ -135,8 +135,6 @@ fixtures =  [
 		"Customer-idr_customer_tax_id",
 		"Customer-idr_sb_customer_tax_id",
 		"Customer-idr_codice_fiscale_buttons",
-		"Physician Schedule-idr_schedule_type",
-		"Physician Schedule Time Slot-idr_date",
 		"Purchase Invoice Item-idr_sb_patient_appointment",
 		"Purchase Invoice Item-idr_patient_appointment",
 		"Purchase Invoice Item-idr_patient_appointment_invoice",
@@ -146,7 +144,8 @@ fixtures =  [
 		"Patient Appointment-idr_appointment_description",
 		"Physician-idr_physician_schedule",
 		"Item-idr_procedure_room",
-		"Patient Appointment-idr_procedure_room"
+		"Patient Appointment-idr_procedure_room",
+		"Patient Appointment-idr_extra_expenses"
 	]]]},
 	{"dt":"Property Setter", "filters": [["name", "in", [
 		"Patient-sex-default",

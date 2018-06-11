@@ -31,6 +31,12 @@ def get_columns():
 			"width": 120
 		},
 		{
+			"fieldname": "expenses",
+			"label": _("Spese"),
+			"fieldtype": "Currency",
+			"width": 120
+		},
+		{
 			"fieldname": "room_charge_percentage",
 			"label": _("% Studio"),
 			"fieldtype": "Data",
@@ -90,6 +96,7 @@ def get_data(filters):
 			procedure_type_fee_rates.append(str(get_idr_fee_rate(procedure_type=item_group, physician_category=physician_price_list)))
 
 		row["payment_amount"] = total_selling_rate
+		row["spese"] = appointment.idr_extra_expenses
 		row["room_charge_percentage"] = " + ".join(procedure_type_fee_rates)
 		row["room_charge_amount"] = total_selling_rate - total_physician_rate
 		row["doctor_amount"] = total_physician_rate
