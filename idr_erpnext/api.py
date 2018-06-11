@@ -392,7 +392,9 @@ def idr_create_invoice(company, physician, patient, appointment_id, appointment_
 
 	appointment = frappe.get_doc("Patient Appointment", appointment_id)
 
-	rate = frappe.db.get_value("Item Price", {"item_code":appointment.idr_appointment_type}, "price_list_rate")
+	default_selling_price_list = frappe.db.get_value("IDR Settings", "IDR Settings", "default_selling_price_list")
+
+	rate = frappe.db.get_value("Item Price", {"item_code":appointment.idr_appointment_type, "price_list":default_selling_price_list}, "price_list_rate")
 
 	sales_invoice.append("items", {
 		"item_code": appointment.idr_appointment_type,
