@@ -14,37 +14,37 @@ def get_columns():
 	return [
 		{
 			"fieldname": "date",
-			"label": _("Date"),
+			"label": _("Data"),
 			"fieldtype": "Date",
 			"width": 90
 		},
 		{
 			"fieldname": "patient_name",
-			"label": _("Patient Name"),
+			"label": _("Nominativo Paziente"),
 			"fieldtype": "Data",
 			"width": 220
 		},
 		{
 			"fieldname": "payment_amount",
-			"label": _("Payment Amount"),
+			"label": _("Importo Pagato"),
 			"fieldtype": "Currency",
 			"width": 120
 		},
 		{
 			"fieldname": "room_charge_percentage",
-			"label": _("% Room"),
+			"label": _("% Studio"),
 			"fieldtype": "Data",
 			"width": 120
 		},
 		{
 			"fieldname": "room_charge_amount",
-			"label": _("Room Amount"),
+			"label": _("Importo Studio"),
 			"fieldtype": "Currency",
 			"width": 120
 		},
 		{
 			"fieldname": "doctor_amount",
-			"label": _("Doctor Amount + Expenses"),
+			"label": _("Importo Medico + Spese"),
 			"fieldtype": "Currency",
 			"width": 200
 		},
