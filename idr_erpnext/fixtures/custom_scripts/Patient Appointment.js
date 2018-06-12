@@ -27,6 +27,41 @@ frappe.ui.form.on("Patient Appointment", {
 			});
 		}
 
+		frm.add_custom_button(__("Update Expenses"), function() {
+			let dialog = new frappe.ui.Dialog({
+				title: __('Update Expenses'),
+				fields: [
+					{
+						reqd: 1,
+						label: 'Expenses',
+						fieldtype: 'Currency',
+						fieldname: 'expenses',
+					}
+				]
+			});
+			dialog.set_value('expenses', frm.doc.idr_extra_expenses);
+			dialog.set_primary_action(__("Update"), () => {
+				let values = dialog.get_values();
+				if(values) {
+					// Set the default_supplier field of the appropriate Item to the selected supplier
+					frappe.call({
+						method: "idr_erpnext.api.idr_update_appointment_expenses",
+						args: {
+							appointment: frm.doc.name,
+							expenses: values.expenses
+						},
+						freeze: true,
+						callback: (r) => {
+							refresh_field('idr_extra_expenses');
+							frappe.show_alert(__("Successfully updated expenses"));
+							dialog.hide();
+						}
+					});
+				}
+			});
+			dialog.show();
+		});
+
 		//Check if patient info is filled
 		check_patient_details(frm);
 	},

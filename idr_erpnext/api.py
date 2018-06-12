@@ -799,3 +799,7 @@ def create_doctor_invoices(filters):
 	frappe.msgprint(
 		_("Doctor Invoice <a href='desk#Form/Purchase%20Invoice/{0}'>{0}</a> created.".format(purchase_invoice.name))
 	)
+
+@frappe.whitelist()
+def idr_update_appointment_expenses(appointment, expenses):
+	frappe.db.set_value("Patient Appointment", appointment, "idr_extra_expenses", expenses)
