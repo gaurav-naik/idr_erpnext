@@ -4,7 +4,6 @@
 from __future__ import unicode_literals
 import frappe
 from frappe import _
-from idr_erpnext.idr_erpnext.doctype.idr_settings.idr_settings import get_idr_fee_rate
 
 def execute(filters=None):
 	columns, data = get_columns(), get_data(filters)
@@ -90,13 +89,12 @@ def get_data(filters):
 			total_selling_rate += invoice_item.rate or 0
 			total_physician_rate += frappe.db.get_value("Item Price", 
 				filters={"price_list": physician_price_list, "item_code":invoice_item.item_code}, fieldname="price_list_rate") or 0
-			
-			item_group = invoice_item.item_group or frappe.db.get_value("Item", invoice_item.item_code, "item_group")
 
-			procedure_type_fee_rates.append(str(get_idr_fee_rate(procedure_type=item_group, physician_category=physician_price_list)))
+			rate = 100-(total_physician_rate*100/total_selling_rate)
+			procedure_type_fee_rates.append(str(rate))
 
 		row["payment_amount"] = total_selling_rate
-		row["spese"] = appointment.idr_extra_expenses
+		row["expenses"] = appointment.idr_extra_expenses
 		row["room_charge_percentage"] = " + ".join(procedure_type_fee_rates)
 		row["room_charge_amount"] = total_selling_rate - total_physician_rate
 		row["doctor_amount"] = total_physician_rate
@@ -109,6 +107,8 @@ def get_data(filters):
 	ritenuta_amount = grand_total_doctor_amount * 0.2 #@20%
 
 	data.append({
+		"nominativo_paziente": _("Totale"),
+		"expenses": sum([data_row.get("expenses") for data_row in data]),
 		"payment_amount": sum([data_row.get("payment_amount") for data_row in data]),
 		"room_charge_amount": sum([data_row.get("room_charge_amount") for data_row in data]),
 		"doctor_amount": grand_total_doctor_amount
