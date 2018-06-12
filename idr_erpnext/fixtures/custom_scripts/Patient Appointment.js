@@ -52,9 +52,9 @@ frappe.ui.form.on("Patient Appointment", {
 						},
 						freeze: true,
 						callback: (r) => {
-							refresh_field('idr_extra_expenses');
 							frappe.show_alert(__("Successfully updated expenses"));
 							dialog.hide();
+							cur_frm.reload_doc();
 						}
 					});
 				}
