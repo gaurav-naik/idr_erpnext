@@ -386,6 +386,7 @@ def idr_create_invoice(company, physician, patient, appointment_id, appointment_
 	sales_invoice = frappe.new_doc("Sales Invoice")
 	sales_invoice.customer = frappe.get_value("Patient", patient, "customer")
 	sales_invoice.appointment = appointment_id
+	sales_invoice.idr_physician = frappe.db.get_value("Patient Appointment", appointment_id, "physician")
 	sales_invoice.due_date = getdate()
 	sales_invoice.is_pos = '0'
 	sales_invoice.debit_to = get_receivable_account(company)
