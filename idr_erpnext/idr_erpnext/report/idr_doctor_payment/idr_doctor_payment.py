@@ -77,34 +77,18 @@ def get_data2(filters): ### [WIP]
 		physician_dept = frappe.db.get_value("Physician", invoice.idr_physician, "department")
 		invoice_items = frappe.get_all("Sales Invoice Item", filters={"parent": invoice.name}, fields=["*"])
 
-		print("IDR EXPENSES", invoice.idr_expenses)
-
 		expenses_per_item = (float(invoice.idr_expenses or 0.0)) / len(invoice_items)
 
 		invoice_idr_fees, invoice_physician_amount = 0, 0
 		physician_fee_percentage_list = []
 		for item in invoice_items:
-			#print("ITEM GROUP: ", item.item_group, " PHYSICIAN: ", invoice.idr_physician)
-
 			physician_fee_percentage = frappe.db.get_value("IDR Physician Fee", 
 				filters={"service_category": item.item_group, "physician":invoice.idr_physician}, fieldname="rate")
 
-			#print("FEE PERCENTAGE: ", physician_fee_percentage)
-
 			item_rate = item.rate - expenses_per_item
-
-			print("ITEM RATE", item.rate)
-			print("EXPENSES PER ITEM", expenses_per_item)
-			print("ITEM RATE - SPESE", item.rate - expenses_per_item)
-
 			item_idr_fees = (item_rate * (physician_fee_percentage/100))
-
-			print("IDR FEES", item_idr_fees)
-
 			physician_amount = item.rate - item_idr_fees
-
-			print("DOCTOR AMOUNT", physician_amount)
-
+			
 			invoice_idr_fees += item_idr_fees
 			invoice_physician_amount += (physician_amount)
 
