@@ -6,7 +6,7 @@ import frappe
 from frappe import _
 
 def execute(filters=None):
-	columns, data = get_columns(), get_data(filters)
+	columns, data = get_columns(), get_data2(filters)
 	return columns, data
 
 def get_columns():
@@ -54,6 +54,70 @@ def get_columns():
 			"width": 200
 		},
 	]
+
+def get_data2(filters): ### [WIP]
+	data = []
+	invoices = frappe.get_all("Sales Invoice", 
+		filters={
+			"posting_date": ("between", [filters.get("from_date"), filters.get("to_date")]), 
+			"idr_physician":filters.get("physician")
+		},
+		fields=["*"],
+		order_by="posting_date")
+
+	for invoice in invoices:
+		row = {"date": invoice.posting_date}
+
+		patient_name = ""
+		if invoice.appointment:
+			patient_name = frappe.db.get_value("Patient Appointment", invoice.appointment, "patient_name")
+
+		row["patient_name"] = patient_name
+
+		physician_dept = frappe.db.get_value("Physician", invoice.idr_physician, "department")
+		invoice_items = frappe.get_all("Sales Invoice Item", filters={"parent": invoice.name}, fields=["*"])
+
+		print("IDR EXPENSES", invoice.idr_expenses)
+
+		expenses_per_item = (float(invoice.idr_expenses) or 0) / len(invoice_items)
+
+		invoice_idr_fees, invoice_physician_amount = 0, 0
+		physician_fee_percentage_list = []
+		for item in invoice_items:
+			#print("ITEM GROUP: ", item.item_group, " PHYSICIAN: ", invoice.idr_physician)
+
+			physician_fee_percentage = frappe.db.get_value("IDR Physician Fee", 
+				filters={"service_category": item.item_group, "physician":invoice.idr_physician}, fieldname="rate")
+
+			#print("FEE PERCENTAGE: ", physician_fee_percentage)
+
+			item_rate = item.rate - expenses_per_item
+
+			print("ITEM RATE", item.rate)
+			print("EXPENSES PER ITEM", expenses_per_item)
+			print("ITEM RATE - SPESE", item.rate - expenses_per_item)
+
+			item_idr_fees = (item_rate * (physician_fee_percentage/100))
+
+			print("IDR FEES", item_idr_fees)
+
+			physician_amount = item.rate - item_idr_fees
+
+			print("DOCTOR AMOUNT", physician_amount)
+
+			invoice_idr_fees += item_idr_fees
+			invoice_physician_amount += (physician_amount)
+
+			physician_fee_percentage_list.append(str(physician_fee_percentage))
+
+		row["payment_amount"] = invoice.net_total
+		row["expenses"] = invoice.idr_expenses
+		row["room_charge_percentage"] = " + ".join(physician_fee_percentage_list)
+		row["room_charge_amount"] = invoice_idr_fees
+		row["doctor_amount"] = invoice_physician_amount
+
+		data.append(row)
+	return data
 
 def get_data(filters):
 	'''
