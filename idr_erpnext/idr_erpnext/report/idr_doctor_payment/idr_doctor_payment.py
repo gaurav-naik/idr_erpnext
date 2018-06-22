@@ -79,7 +79,7 @@ def get_data2(filters): ### [WIP]
 
 		print("IDR EXPENSES", invoice.idr_expenses)
 
-		expenses_per_item = (float(invoice.idr_expenses) or 0) / len(invoice_items)
+		expenses_per_item = (float(invoice.idr_expenses or 0.0)) / len(invoice_items)
 
 		invoice_idr_fees, invoice_physician_amount = 0, 0
 		physician_fee_percentage_list = []
