@@ -807,14 +807,8 @@ def idr_update_appointment_expenses(appointment, expenses):
 
 def idr_customer_on_update(doc, method):
 	#Checks
-	if not doc.idr_address_line1:
-		frappe.throw(_("Please enter Address Line 1")) 
-
-	if not doc.idr_address_town:
-		frappe.throw(_("Please enter Town/City"))
-
-	if not doc.idr_address_pincode:
-		frappe.throw(_("Please enter Pindcode"))
+	if not doc.idr_address_line1 or not doc.idr_address_town or not doc.idr_address_pincode:
+		return
 
 	existing_address_name = get_default_address("Customer", doc.name)
 
