@@ -804,3 +804,31 @@ def create_doctor_invoices(filters):
 @frappe.whitelist()
 def idr_update_appointment_expenses(appointment, expenses):
 	frappe.db.set_value("Patient Appointment", appointment, "idr_extra_expenses", expenses)
+
+def idr_customer_on_update(doc, method):
+	#Checks
+	if not doc.idr_address_line1:
+		frappe.throw(_("Please enter Address Line 1")) 
+
+	if not doc.idr_address_town:
+		frappe.throw(_("Please enter Town/City"))
+
+	if not doc.idr_address_pincode:
+		frappe.throw(_("Please enter Pindcode"))
+
+	existing_address_name = get_default_address("Customer", doc.name)
+
+	if existing_address_name:
+		address = frappe.get_doc("Address", existing_address_name)
+	else:
+		address = frappe.new_doc("Address")
+		address.append('links', {
+			"link_doctype": "Customer",
+			"link_name": doc.name
+		})
+
+	address.address_line1 = doc.idr_address_line1
+	address.address_line2 = doc.idr_address_line2
+	address.city = doc.idr_address_town
+	address.pincode = doc.idr_address_pincode
+	address.save()

@@ -91,6 +91,9 @@ doc_events = {
 	},
 	"Patient Appointment": {
 		"before_insert": "idr_erpnext.api.idr_patient_appointment_before_insert"
+	},
+	"Customer": {
+		"on_update": "idr_erpnext.api.idr_customer_on_update"
 	}
 }
 
