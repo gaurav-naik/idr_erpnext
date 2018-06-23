@@ -132,6 +132,12 @@ fixtures =  [
 		"Customer-idr_customer_cb_1",
 		"Customer-idr_customer_date_of_birth",
 		"Customer-idr_customer_place_of_birth",
+		"Customer-idr_customer_address_section",
+		"Customer-idr_address_line1",
+		"Customer-idr_address_line2",
+		"Customer-idr_cb2"
+		"Customer-idr_address_town",
+		"Customer-idr_address_pincode",
 		"Customer-idr_customer_tax_id",
 		"Customer-idr_sb_customer_tax_id",
 		"Customer-idr_codice_fiscale_buttons",
