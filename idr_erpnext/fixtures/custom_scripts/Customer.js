@@ -45,10 +45,10 @@ frappe.ui.form.on("Customer", {
 		frm.set_value("tax_id", frm.doc.idr_customer_tax_id);
 	},
 	idr_customer_first_name: function(frm) {
-		frm.set_value(make_customer_name(frm.doc.idr_customer_first_name, frm.doc.idr_customer_last_name));
+		frm.set_value("customer_name", make_customer_name(frm.doc.idr_customer_first_name, frm.doc.idr_customer_last_name));
 	},
 	idr_customer_last_name: function(frm) {
-		frm.set_value(make_customer_name(frm.doc.idr_customer_first_name, frm.doc.idr_customer_last_name));
+		frm.set_value("customer_name", make_customer_name(frm.doc.idr_customer_first_name, frm.doc.idr_customer_last_name));
 	}
 });
 
