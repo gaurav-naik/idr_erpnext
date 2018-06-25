@@ -115,7 +115,7 @@ def get_data(filters):
 
 	appointments = frappe.get_all("Patient Appointment", 
 		filters={"appointment_date": ("between", [filters.get("from_date"), filters.get("to_date")]), 
-			"physician":filters.get("physician"), "sales_invoice":("!=", "")},
+			"physician":filters.get("physician"), "sales_invoice":("!=", ""), "docstatus":1}, 
 		fields=["*"],
 		order_by="appointment_date")
 
