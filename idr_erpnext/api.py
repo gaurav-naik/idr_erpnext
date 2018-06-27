@@ -807,7 +807,7 @@ def idr_update_appointment_expenses(appointment, expenses):
 
 def idr_customer_on_update(doc, method):
 	#Checks
-	if not doc.idr_address_line1 or not doc.idr_address_town or not doc.idr_address_pincode:
+	if not doc.idr_customer_address_line1 or not doc.idr_customer_address_town or not doc.idr_customer_address_pincode:
 		return
 
 	existing_address_name = get_default_address("Customer", doc.name)
@@ -821,8 +821,8 @@ def idr_customer_on_update(doc, method):
 			"link_name": doc.name
 		})
 
-	address.address_line1 = doc.idr_address_line1
-	address.address_line2 = doc.idr_address_line2
-	address.city = doc.idr_address_town
-	address.pincode = doc.idr_address_pincode
+	address.address_line1 = doc.idr_customer_address_line1
+	address.address_line2 = doc.idr_customer_address_line2
+	address.city = doc.idr_customer_address_town
+	address.pincode = doc.idr_customer_address_pincode
 	address.save()
