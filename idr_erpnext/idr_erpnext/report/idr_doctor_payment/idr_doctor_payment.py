@@ -56,11 +56,15 @@ def get_columns():
 	]
 
 def get_data2(filters): ### [WIP]
+	if len(frappe.get_all("IDR Physician Fee", {"physician":filters.get("physician")})) == 0:
+		frappe.throw(_("Please set physician fees for this doctor"))
+
 	data = []
 	invoices = frappe.get_all("Sales Invoice", 
 		filters={
 			"posting_date": ("between", [filters.get("from_date"), filters.get("to_date")]), 
-			"idr_physician":filters.get("physician")
+			"idr_physician":filters.get("physician"),
+			"docstatus": 1
 		},
 		fields=["*"],
 		order_by="posting_date")
