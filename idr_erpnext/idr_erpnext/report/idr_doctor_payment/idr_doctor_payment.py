@@ -105,6 +105,30 @@ def get_data2(filters): ### [WIP]
 		row["doctor_amount"] = invoice_physician_amount
 
 		data.append(row)
+	
+	grand_total_doctor_amount = sum([data_row.get("doctor_amount") for data_row in data])
+	ritenuta_amount = grand_total_doctor_amount * 0.2 #@20%
+
+	data.append({
+		"nominativo_paziente": _("Totale"),
+		"expenses": sum([data_row.get("expenses") for data_row in data]),
+		"payment_amount": sum([data_row.get("payment_amount") for data_row in data]),
+		"room_charge_amount": sum([data_row.get("room_charge_amount") for data_row in data]),
+		"doctor_amount": grand_total_doctor_amount
+	})
+
+	#ritenuto
+	data.append({
+		"room_charge_percentage": "Ritenuta 20%",
+		"doctor_amount": ritenuta_amount
+	})
+
+	#total
+	data.append({
+		"room_charge_percentage": "<b>" + _("Total") + "</b>",
+		"doctor_amount": grand_total_doctor_amount - ritenuta_amount
+	})	
+
 	return data
 
 def get_data(filters):
