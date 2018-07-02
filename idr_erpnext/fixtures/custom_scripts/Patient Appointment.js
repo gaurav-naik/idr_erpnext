@@ -38,7 +38,6 @@ frappe.ui.form.on("Patient Appointment", {
 				"procedure_room": frm.doc.idr_procedure_room
 			}
 		}).done(function(r) {
-			console.log("Physician", r);
 			if (!r.exc) {
 				frm.set_value("physician", r.message.physician);
 			}
@@ -82,7 +81,6 @@ function check_patient_details(frm) {
 				patient: frm.doc.patient,
 			}
 		}).done(function(r) {
-			console.log(r);
 			if (r && r.message && r.message.missing_details && r.message.missing_details.length > 0) {
 				frm.set_df_property("patient", "label", 
 					__("Patient") + '<a class="badge" style="color:white;background-color:red" href="/desk#Form/Customer/' + r.message.patient_customer + '">' 
@@ -122,7 +120,6 @@ function check_patient_availability(frm) {
 			date: appointment_date
 		},
 		callback: (r) => {
-			// console.log(r);
 			var data = r.message;
 			if(data.available_slots.length > 0) {
 				show_availability(data);
@@ -141,9 +138,9 @@ function check_patient_availability(frm) {
 	}
 
 	function show_availability(data) {
-		console.log("slots", data.available_slots);
-		console.log("appointments", data.appointments);
-		console.log("room_appointments", data.appointments_requiring_rooms);
+		// console.log("slots", data.available_slots);
+		// console.log("appointments", data.appointments);
+		// console.log("room_appointments", data.appointments_requiring_rooms);
 
 		var d = new frappe.ui.Dialog({
 			title: __("Available slots"),
@@ -179,7 +176,6 @@ function check_patient_availability(frm) {
 
 		// disable buttons for which appointments are booked
 		data.appointments.map(slot => {
-			console.log(slot)
 			if(slot.status == "Scheduled" || slot.status == "Open" || slot.status == "Closed"){
 				$wrapper
 					.find(`button[data-name="${slot.appointment_time}"]`)
