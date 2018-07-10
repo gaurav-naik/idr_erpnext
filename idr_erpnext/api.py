@@ -277,6 +277,7 @@ def idr_create_invoice(company, physician, patient, appointment_id, appointment_
 
 def idr_patient_appointment_before_insert(doc, method):
 	generate_appointment_description(doc, method) #For displaying in Calendar View (Gorlomi E- BR) when doc is Riccardo Bono, patient Enzo Gorlomi
+	doc.appointment_datetime, doc.idr_appointment_endtime = get_appointment_bounds(doc.appointment_date, doc.appointment_time, doc.duration)
 
 def generate_appointment_description(doc, method):	
 	doc.idr_appointment_description = "{0} {1}. {2}{3}".format(frappe.db.get_value("Patient", doc.patient, "idr_patient_last_name"), 
@@ -532,3 +533,10 @@ def idr_customer_on_update(doc, method):
 	address.city = doc.idr_customer_address_town
 	address.pincode = doc.idr_customer_address_pincode
 	address.save()
+
+
+def get_appointment_bounds(start_date, start_time, duration):
+	start_datetime = frappe.utils.datetime.datetime.combine(frappe.utils.get_datetime(start_date), frappe.utils.get_time(start_time))
+	end_datetime = start_datetime + frappe.utils.datetime.timedelta(minutes=int(duration))
+	#return frappe.utils.datetime.datetime.strftime(end_datetime, "%H:%M:%S")
+	return start_datetime, end_datetime
