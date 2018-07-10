@@ -156,7 +156,8 @@ fixtures =  [
 		"Patient Appointment-idr_procedure_room",
 		"Sales Invoice-idr_expenses",
 		"Sales Invoice-idr_physician",
-		"Patient Appointment-idr_appointment_endtime"
+		"Patient Appointment-idr_appointment_endtime",
+		"Sales Invoice-idr_mode_of_payment"
 	]]]},
 	{"dt":"Property Setter", "filters": [["name", "in", [
 		"Patient-sex-default",
