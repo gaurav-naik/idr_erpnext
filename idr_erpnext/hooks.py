@@ -182,7 +182,8 @@ fixtures =  [
 		"Address-pincode-reqd",
 		"Purchase Invoice-default_print_format",
 		"Customer-quick_entry",
-		"Patient-patient_name-in_standard_filter"
+		"Patient-patient_name-in_standard_filter",
+		"Patient-occupation-in_standard_filter"
 	]]]},
 	{"dt":"Print Format", "filters": [["name", "in", [
 		"Consent Letter", 
