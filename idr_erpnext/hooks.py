@@ -181,7 +181,8 @@ fixtures =  [
 		"Patient Appointment-check_availability-hidden",
 		"Address-pincode-reqd",
 		"Purchase Invoice-default_print_format",
-		"Customer-quick_entry"
+		"Customer-quick_entry",
+		"Patient-patient_name-in_standard_filter"
 	]]]},
 	{"dt":"Print Format", "filters": [["name", "in", [
 		"Consent Letter", 
