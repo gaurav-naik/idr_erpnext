@@ -18,6 +18,12 @@ def get_columns():
 			"width": 90
 		},
 		{
+			"fieldname": "customer_name",
+			"label": _("Nominativo Cliente"),
+			"fieldtype": "Data",
+			"width": 220
+		},
+		{
 			"fieldname": "patient_name",
 			"label": _("Nominativo Paziente"),
 			"fieldtype": "Data",
@@ -71,6 +77,8 @@ def get_data2(filters): ### [WIP]
 
 	for invoice in invoices:
 		row = {"date": invoice.posting_date}
+
+		row["customer_name"] = invoice.customer_name
 
 		patient_name = ""
 		if invoice.appointment:
