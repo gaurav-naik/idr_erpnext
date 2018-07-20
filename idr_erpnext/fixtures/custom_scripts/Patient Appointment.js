@@ -1,3 +1,5 @@
+cur_frm.add_fetch("physician", "idr_appointment_color", "idr_appointment_color");
+
 frappe.ui.form.on("Patient Appointment", {
 	onload: function(frm) {
 		//Check if patient info is filled
@@ -40,6 +42,7 @@ frappe.ui.form.on("Patient Appointment", {
 		}).done(function(r) {
 			if (!r.exc) {
 				frm.set_value("physician", r.message.physician);
+				frm.set_value("idr_appointment_color", r.message.appointment_color);
 			}
 		}).error(function(err) {
 			frappe.show_alert(__("Could not fetch earliest available doctor."));

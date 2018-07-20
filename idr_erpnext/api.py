@@ -401,12 +401,13 @@ def get_earliest_available_date2(physician, procedure_room=None):
 @frappe.whitelist()
 def get_earliest_available_physician_and_date2(procedure_room=None):
 	soci_department = frappe.db.get_value("IDR Settings", "IDR Settings", "member_department")
-	soci_physicians = frappe.get_all("Physician", filters={"department":soci_department}, fields=["name"])
+	soci_physicians = frappe.get_all("Physician", filters={"department":soci_department}, fields=["name", "idr_appointment_color"])
 
 	earliest_physician_availability_list = [
 		frappe._dict(
 			physician=physician.name, 
-			earliest_available_date=get_earliest_available_date2(physician.name, procedure_room)
+			earliest_available_date=get_earliest_available_date2(physician.name, procedure_room),
+			appointment_color=physician.idr_appointment_color
 		) for physician in soci_physicians
 	]
 
@@ -540,3 +541,18 @@ def get_appointment_bounds(start_date, start_time, duration):
 	end_datetime = start_datetime + frappe.utils.datetime.timedelta(minutes=int(duration))
 	#return frappe.utils.datetime.datetime.strftime(end_datetime, "%H:%M:%S")
 	return start_datetime, end_datetime
+
+@frappe.whitelist()
+def idr_appointment_get_events(start, end, filters=None):
+	from frappe.desk.calendar import get_event_conditions
+	conditions = get_event_conditions("Patient Appointment", filters)
+	data = frappe.db.sql("""select name, patient, physician, status, idr_appointment_description, 
+		duration, timestamp(appointment_date, appointment_time) as
+		'start', idr_appointment_color as 'color' from `tabPatient Appointment` where
+		(appointment_date between %(start)s and %(end)s)
+		and docstatus < 2 {conditions}""".format(conditions=conditions),
+		{"start": start, "end": end}, as_dict=True, update={"allDay": 0})
+	for item in data:
+		item.end = item.start + frappe.utils.datetime.timedelta(minutes = int(item.duration))
+	return data
+	

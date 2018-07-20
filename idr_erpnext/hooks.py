@@ -30,6 +30,9 @@ app_license = "GPL v3"
 doctype_list_js = {
 	"Patient Appointment" : "public/js/patient_appointment_list.js"
 }
+doctype_calendar_js = {
+	"Patient Appointment" : "public/js/patient_appointment_calendar.js"
+}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
 
@@ -157,7 +160,9 @@ fixtures =  [
 		"Sales Invoice-idr_expenses",
 		"Sales Invoice-idr_physician",
 		"Patient Appointment-idr_appointment_endtime",
-		"Sales Invoice-idr_mode_of_payment"
+		"Sales Invoice-idr_mode_of_payment",
+		"Patient Appointment-idr_appointment_color",
+		"Physician-idr_appointment_color"
 	]]]},
 	{"dt":"Property Setter", "filters": [["name", "in", [
 		"Patient-sex-default",
