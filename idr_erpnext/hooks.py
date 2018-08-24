@@ -27,7 +27,12 @@ app_license = "GPL v3"
 
 # include js in doctype views
 # doctype_js = {"doctype" : "public/js/doctype.js"}
-# doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
+doctype_list_js = {
+	"Patient Appointment" : "public/js/patient_appointment_list.js"
+}
+doctype_calendar_js = {
+	"Patient Appointment" : "public/js/patient_appointment_calendar.js"
+}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
 
@@ -84,30 +89,25 @@ doc_events = {
 		"on_update": "idr_erpnext.api.patient_on_update"
 	},
 	"Physician": {
-		"after_insert": "idr_erpnext.api.physician_after_insert"
+		"after_insert": "idr_erpnext.api.idr_physician_after_insert",
+		"on_update": "idr_erpnext.api.idr_physician_on_update"
+	},
+	"Patient Appointment": {
+		"before_insert": "idr_erpnext.api.idr_patient_appointment_before_insert"
+	},
+	"Customer": {
+		"on_update": "idr_erpnext.api.idr_customer_on_update"
 	}
 }
 
 # Scheduled Tasks
 # ---------------
 
-# scheduler_events = {
-# 	"all": [
-# 		"idr_erpnext.tasks.all"
-# 	],
-# 	"daily": [
-# 		"idr_erpnext.tasks.daily"
-# 	],
-# 	"hourly": [
-# 		"idr_erpnext.tasks.hourly"
-# 	],
-# 	"weekly": [
-# 		"idr_erpnext.tasks.weekly"
-# 	]
-# 	"monthly": [
-# 		"idr_erpnext.tasks.monthly"
-# 	]
-# }
+scheduler_events = {
+	"daily": [
+		"idr_erpnext.tasks.daily"
+	],
+}
 
 # Testing
 # -------
@@ -117,39 +117,92 @@ doc_events = {
 # Overriding Whitelisted Methods
 # ------------------------------
 #
-# override_whitelisted_methods = {
-# 	"frappe.desk.doctype.event.event.get_events": "idr_erpnext.event.get_events"
-# }
+override_whitelisted_methods = {
+	"erpnext.healthcare.doctype.patient_appointment.patient_appointment.get_availability_data":"idr_erpnext.api.idr_get_availability_data1",
+	"erpnext.healthcare.doctype.patient_appointment.patient_appointment.create_invoice":"idr_erpnext.api.idr_create_invoice"
+}
 
 fixtures =  [
 	{"dt":"Custom Field", "filters": [["name", "in", [
-		"Patient-idr_patient_address",
-		"Patient-idr_patient_address_display", 
-		"Patient-idr_place_of_birth",
-		"Patient-idr_sb_patient_details",
-		"Patient-idr_address_line1",
-		"Patient-idr_address_line2",
-		"Patient-idr_address_city",
-		"Patient-idr_address_pincode",
-		"Patient-idr_patient_codice_fiscale",
+		"Patient-idr_sb_patient_quick_entry",
 		"Patient-idr_patient_first_name",
 		"Patient-idr_patient_last_name",
-		"Patient-idr_patient_phone_no",
 		"Patient-idr_cb_patient_quick_entry",
-		"Patient-idr_sb_patient_quick_entry",
+		"Patient-idr_patient_phone_no",
 		"Patient Appointment-idr_appointment_type",
-		"Physician-idr_supplier"
+		"Physician-idr_supplier",
+		"Customer-idr_customer_quick_entry",
+		"Customer-idr_customer_first_name",
+		"Customer-idr_customer_last_name",
+		"Customer-idr_customer_gender",
+		"Customer-idr_customer_cb_1",
+		"Customer-idr_customer_date_of_birth",
+		"Customer-idr_customer_place_of_birth",
+		"Customer-idr_customer_address_section",
+		"Customer-idr_customer_address_line1",
+		"Customer-idr_customer_address_line2",
+		"Customer-idr_customer_address_cb1",
+		"Customer-idr_customer_address_town",
+		"Customer-idr_customer_address_pincode",
+		"Customer-idr_customer_tax_id",
+		"Customer-idr_sb_customer_tax_id",
+		"Customer-idr_codice_fiscale_buttons",
+		"Purchase Invoice Item-idr_sb_patient_appointment",
+		"Purchase Invoice Item-idr_patient_appointment",
+		"Purchase Invoice Item-idr_patient_appointment_invoice",
+		"Sales Invoice-diagnosi",
+		"Sales Invoice-diagnosi_section",
+		"Patient Appointment-idr_servizio",
+		"Patient Appointment-idr_appointment_description",
+		"Physician-idr_physician_schedule",
+		"Item-idr_procedure_room",
+		"Patient Appointment-idr_procedure_room",
+		"Sales Invoice-idr_expenses",
+		"Sales Invoice-idr_physician",
+		"Patient Appointment-idr_appointment_endtime",
+		"Sales Invoice-idr_mode_of_payment",
+		"Patient Appointment-idr_appointment_color",
+		"Physician-idr_appointment_color"
 	]]]},
 	{"dt":"Property Setter", "filters": [["name", "in", [
 		"Patient-sex-default",
 		"Sales Invoice-default_print_format",
+		"Physician-department-in_list_view",
+		"Patient Appointment-appointment_date-in_list_view",
+		"Customer-customer_type-default",
+		"Customer-basic_info-collapsible",
+		"Customer-basic_info-collapsible_depends_on",
+		"Patient Appointment-title_field",
+		"Patient Appointment-patient-in_list_view",
+		"Patient Appointment-appointment_time-in_list_view",
+		"Patient Appointment-status-in_list_view",
+		"Sales Invoice-project-hidden",
+		"Sales Invoice-is_pos-hidden",
+		"Sales Invoice-read_only_onload",
+		"Patient Appointment-read_only_onload",
+		"Customer-basic_info-hidden",
+		"Customer-currency_and_price_list-hidden",
+		"Physician-appointments-hidden",
+		"Patient Appointment-check_availability-hidden",
+		"Address-pincode-reqd",
+		"Purchase Invoice-default_print_format",
+		"Customer-quick_entry",
+		"Patient-patient_name-in_standard_filter",
+		"Patient-occupation-in_standard_filter"
 	]]]},
 	{"dt":"Print Format", "filters": [["name", "in", [
 		"Consent Letter", 
 		"Medical Certificate",
-		"IDR Sales Invoice"
+		"IDR Fattura Paziente",
+		"IDR Fattura Medici"
+	]]]},
+	{"dt":"Letter Head", "filters": [["name", "in", [
+		"IDR"
+	]]]},
+	{"dt":"Calendar View", "filters": [["name", "in", [
+		"IDR Patient Appointment"
+	]]]},
+	{"dt":"Report", "filters": [["name", "in", [
+		"Lista Appuntamenti"
 	]]]}
 ]
-
-
-

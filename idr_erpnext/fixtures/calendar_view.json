@@ -1,0 +1,12 @@
+[
+ {
+  "docstatus": 0, 
+  "doctype": "Calendar View", 
+  "end_date_field": "appointment_date", 
+  "modified": "2018-05-13 09:14:58.212322", 
+  "name": "IDR Patient Appointment", 
+  "reference_doctype": "Patient Appointment", 
+  "start_date_field": "appointment_date", 
+  "subject_field": "idr_appointment_description"
+ }
+]

@@ -1,0 +1,28 @@
+[
+ {
+  "add_total_row": 0, 
+  "apply_user_permissions": 1, 
+  "disabled": 0, 
+  "docstatus": 0, 
+  "doctype": "Report", 
+  "is_standard": "No", 
+  "javascript": null, 
+  "json": null, 
+  "letter_head": "IDR", 
+  "modified": "2018-05-09 00:55:47.557895", 
+  "module": "IDR ERPNext", 
+  "name": "Lista Appuntamenti", 
+  "query": "SELECT\n`tabPatient Appointment`.appointment_date AS \"Data::100\",\n`tabPatient Appointment`.appointment_time AS \"Orario::100\",\n`tabPatient Appointment`.patient_name AS \"Paziente::300\",\n`tabItem`.item_name AS \"Servizio::200\",\n`tabPatient`.idr_patient_phone_no AS \"Telefono::200\",\nphysician AS \"Medico::200\"\nFROM `tabPatient Appointment`\nJOIN `tabItem` ON `tabItem`.name=`tabPatient Appointment`.idr_appointment_type\nJOIN `tabPatient` ON `tabPatient`.patient_name=`tabPatient Appointment`.patient_name", 
+  "ref_doctype": "Patient Appointment", 
+  "report_name": "Lista Appuntamenti", 
+  "report_type": "Query Report", 
+  "roles": [
+   {
+    "role": "Healthcare Administrator"
+   }, 
+   {
+    "role": "Physician"
+   }
+  ]
+ }
+]
