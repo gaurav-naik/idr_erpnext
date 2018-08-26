@@ -33,31 +33,31 @@ def get_columns():
 			"fieldname": "payment_amount",
 			"label": _("Importo Pagato"),
 			"fieldtype": "Currency",
-			"width": 120
+			"width": 100
 		},
 		{
 			"fieldname": "expenses",
 			"label": _("Spese"),
 			"fieldtype": "Currency",
-			"width": 120
+			"width": 75
 		},
 		{
 			"fieldname": "room_charge_percentage",
 			"label": _("% Studio"),
 			"fieldtype": "Data",
-			"width": 120
+			"width": 75
 		},
 		{
 			"fieldname": "room_charge_amount",
 			"label": _("Importo Studio"),
 			"fieldtype": "Currency",
-			"width": 120
+			"width": 75
 		},
 		{
 			"fieldname": "doctor_amount",
 			"label": _("Importo Medico + Spese"),
 			"fieldtype": "Currency",
-			"width": 200
+			"width": 200,
 		},
 	]
 
