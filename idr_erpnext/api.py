@@ -276,11 +276,11 @@ def idr_create_invoice(company, physician, patient, appointment_id, appointment_
 	return sales_invoice.name
 
 def idr_patient_appointment_before_insert(doc, method):
-	generate_appointment_description(doc, method) #For displaying in Calendar View (Gorlomi E- BR) when doc is Riccardo Bono, patient Enzo Gorlomi
+	#doc.idr_appointment_description = generate_appointment_description(doc) #For displaying in Calendar View (Gorlomi E- BR) when doc is Riccardo Bono, patient Enzo Gorlomi
 	doc.appointment_datetime, doc.idr_appointment_endtime = get_appointment_bounds(doc.appointment_date, doc.appointment_time, doc.duration)
 
-def generate_appointment_description(doc, method):	
-	doc.idr_appointment_description = "{0} {1}. {2}{3}".format(frappe.db.get_value("Patient", doc.patient, "idr_patient_last_name"), 
+def generate_appointment_description(doc):	
+	return "{0} {1}. {2}{3}".format(frappe.db.get_value("Patient", doc.patient, "idr_patient_last_name"), 
 		frappe.db.get_value("Patient", doc.patient, "idr_patient_first_name")[0].upper(), 
 		frappe.db.get_value("Physician", doc.physician, "last_name")[0].upper(), 
 		frappe.db.get_value("Physician", doc.physician, "first_name")[0].upper())
@@ -555,4 +555,13 @@ def idr_appointment_get_events(start, end, filters=None):
 	for item in data:
 		item.end = item.start + frappe.utils.datetime.timedelta(minutes = int(item.duration))
 	return data
+
+def idr_patient_appointment_on_update(doc, method):
+	appointment_description = generate_appointment_description(doc)
+	requires_anaesthetist = frappe.db.get_value("Item", doc.idr_appointment_type, "idr_requires_anaesthetist")
 	
+	if requires_anaesthetist:
+		appointment_description += " A"
+		frappe.msgprint("Anaesthetista")
+	frappe.db.set_value("Patient Appointment", doc.name, "idr_appointment_description", appointment_description)
+	frappe.db.commit()

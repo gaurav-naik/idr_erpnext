@@ -93,7 +93,8 @@ doc_events = {
 		"on_update": "idr_erpnext.api.idr_physician_on_update"
 	},
 	"Patient Appointment": {
-		"before_insert": "idr_erpnext.api.idr_patient_appointment_before_insert"
+		"before_insert": "idr_erpnext.api.idr_patient_appointment_before_insert",
+		"on_update": "idr_erpnext.api.idr_patient_appointment_on_update"
 	},
 	"Customer": {
 		"on_update": "idr_erpnext.api.idr_customer_on_update"
@@ -162,7 +163,8 @@ fixtures =  [
 		"Patient Appointment-idr_appointment_endtime",
 		"Sales Invoice-idr_mode_of_payment",
 		"Patient Appointment-idr_appointment_color",
-		"Physician-idr_appointment_color"
+		"Physician-idr_appointment_color",
+		"Item-idr_requires_anaesthetist"
 	]]]},
 	{"dt":"Property Setter", "filters": [["name", "in", [
 		"Patient-sex-default",
