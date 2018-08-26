@@ -546,7 +546,7 @@ def get_appointment_bounds(start_date, start_time, duration):
 def idr_appointment_get_events(start, end, filters=None):
 	from frappe.desk.calendar import get_event_conditions
 	conditions = get_event_conditions("Patient Appointment", filters)
-	data = frappe.db.sql("""select name, patient, physician, status, idr_appointment_description, 
+	data = frappe.db.sql("""select name, patient, physician, status, idr_appointment_description as 'title', 
 		duration, timestamp(appointment_date, appointment_time) as
 		'start', idr_appointment_color as 'color' from `tabPatient Appointment` where
 		(appointment_date between %(start)s and %(end)s)
