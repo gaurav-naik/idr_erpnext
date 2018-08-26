@@ -51,13 +51,13 @@ def get_columns():
 			"fieldname": "room_charge_amount",
 			"label": _("Importo Studio"),
 			"fieldtype": "Currency",
-			"width": 75
+			"width": 100
 		},
 		{
 			"fieldname": "doctor_amount",
 			"label": _("Importo Medico + Spese"),
 			"fieldtype": "Currency",
-			"width": 200,
+			"width": 150,
 		},
 	]
 
